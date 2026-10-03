@@ -63,11 +63,11 @@ function identifyRootAttachmentGroups(elements: any[]): Set<any> {
  */
 export function deleteSectionSafe(elements: any[]) {
     if (!elements || elements.length === 0) {
-        Blockbench.showQuickMessage("There are no attachments in this section to delete.", QUICK_MESSAGE_DURATION);
+        Blockbench.showQuickMessage("此槽位没有可删除的附件。", QUICK_MESSAGE_DURATION);
         return;
     }
 
-    Undo.initEdit({ outliner: true }, `Delete (-) Root`);
+    Undo.initEdit({ outliner: true }, `删除附件并保留根组`);
 
     // Identify root attachment groups (first level with clothingSlot) that should be preserved
     const rootGroups = identifyRootAttachmentGroups(elements);
@@ -80,8 +80,8 @@ export function deleteSectionSafe(elements: any[]) {
     });
 
     if (allAttachments.size === 0) {
-        Undo.finishEdit('Delete attachment(s)');
-        Blockbench.showQuickMessage("No attachment elements found to delete.", QUICK_MESSAGE_DURATION);
+        Undo.finishEdit('删除附件');
+        Blockbench.showQuickMessage("没有找到可删除的附件元素。", QUICK_MESSAGE_DURATION);
         return;
     }
 
@@ -93,10 +93,10 @@ export function deleteSectionSafe(elements: any[]) {
         attachment.remove();
     });
 
-    Undo.finishEdit(`Delete (-) Root: ${allAttachments.size} attachment(s)`);
+    Undo.finishEdit(`删除 ${allAttachments.size} 个附件并保留根组`);
     
     Blockbench.dispatchEvent('attachments_changed', {});
-    Blockbench.showQuickMessage(`Delete (-) Root: Deleted ${allAttachments.size} attachment(s) (root groups preserved)`, QUICK_MESSAGE_DURATION);
+    Blockbench.showQuickMessage(`已删除 ${allAttachments.size} 个附件，根组已保留`, QUICK_MESSAGE_DURATION);
 }
 
 /**
@@ -105,19 +105,19 @@ export function deleteSectionSafe(elements: any[]) {
  */
 export function deleteSection(elements: any[]) {
     if (!elements || elements.length === 0) {
-        Blockbench.showQuickMessage("There are no attachments in this section to delete.", QUICK_MESSAGE_DURATION);
+        Blockbench.showQuickMessage("此槽位没有可删除的附件。", QUICK_MESSAGE_DURATION);
         return;
     }
 
     // Confirmation is handled in panel.ts confirmDelete method
-    Undo.initEdit({ outliner: true }, `Delete ${elements.length} attachment(s)`);
+    Undo.initEdit({ outliner: true }, `删除 ${elements.length} 个附件`);
 
     // The 'elements' array from the panel is the definitive list of top-level attachments for this section.
     // Blockbench's .remove() method handles removing children automatically, regardless of their properties.
     elements.forEach(element => element.remove());
 
-    Undo.finishEdit(`Delete ${elements.length} attachment(s)`);
+    Undo.finishEdit(`删除 ${elements.length} 个附件`);
     
     Blockbench.dispatchEvent('attachments_changed', {});
-    Blockbench.showQuickMessage(`Deleted ${elements.length} attachment(s)`, QUICK_MESSAGE_DURATION);
+    Blockbench.showQuickMessage(`已删除 ${elements.length} 个附件`, QUICK_MESSAGE_DURATION);
 }

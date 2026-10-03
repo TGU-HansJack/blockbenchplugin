@@ -6,7 +6,7 @@ import { VS_Shape } from "./vs_shape_def";
 import JSON5 from "json5";
 
 export const codecVS = new Codec("codecVS", {
-    name: "Vintage Story Codec",
+    name: "Vintage Story 编解码器",
     extension: "json",
     remember: true,
     load_filter: {
@@ -26,8 +26,8 @@ export const codecVS = new Codec("codecVS", {
         } catch (e) {
             console.error('[VS Codec] Compile failed:', e);
             Blockbench.showMessageBox({
-                title: 'VS Export Error',
-                message: `Failed to compile model: ${e instanceof Error ? e.message : String(e)}`
+                title: 'VS 导出错误',
+                message: `模型编译失败：${e instanceof Error ? e.message : String(e)}`
             });
             return undefined;
         }

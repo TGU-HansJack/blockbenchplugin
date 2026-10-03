@@ -4,7 +4,7 @@ A Blockbench (BB) plugin that handles importing and exporting from and to the Vi
 
 # How to install:
 
-Open Blockbench and select "File->Plugins..." then drag-and-drop the vs_plugin.js  file into the window that opens and you are ready to go.
+Open Blockbench and select "File->Plugins..." then drag-and-drop the `vintagestory.js` file into the window that opens and you are ready to go. A prebuilt file is available from the Build Plugin GitHub Action artifact.
 
 # Basic use:
 
@@ -30,7 +30,7 @@ npm install
 npm run gen_schema
 npm run build
 ```
-This should build the plugin with webpack into .../dist/vs_plugin.js which can then be imported to BB.
+This builds the plugin with esbuild into `dist/vintagestory.js`, which can then be imported into Blockbench.
 You only need to rerun gen_schema when vs_shape_defs.ts has changed, otherwise further builds only require running
 ```console
 npm run build

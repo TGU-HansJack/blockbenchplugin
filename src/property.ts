@@ -77,7 +77,7 @@ function registerStepParentTransformProperties(targetClass: any) {
 }
 
 const PALETTE_SLOT_OPTIONS = {
-    '0': '0 - Inherit / Default',
+    '0': '0 - 继承 / 默认',
     '1': '1',
     '2': '2',
     '3': '3',
@@ -90,13 +90,13 @@ const PALETTE_SLOT_OPTIONS = {
 function registerPaletteSlotProperty(targetClass: any) {
     const property = new Property(targetClass, 'number', 'paletteSlot', {
         default: 0,
-        label: 'Palette Slot',
+        label: '调色板槽位',
         exposed: true,
         options: PALETTE_SLOT_OPTIONS,
         inputs: {
             element_panel: {
                 input: {
-                    label: 'Palette Slot',
+                    label: '调色板槽位',
                     type: 'select',
                     options: PALETTE_SLOT_OPTIONS,
                 },
@@ -110,12 +110,12 @@ function registerPaletteSlotProperty(targetClass: any) {
 export const VS_GROUP_PROPS = [
     new Property(Group, "string", "stepParentName", {
         default: '',
-        label: "Step Parent",
+        label: "步骤父级",
         exposed: true,
         inputs: {
             element_panel: {
                 input: {
-                    label: 'Step Parent',
+                    label: '步骤父级',
                     type: 'text'
                 }
             }
@@ -131,28 +131,28 @@ export const VS_GROUP_PROPS = [
 // Blockbench-only properties (not exported to VS JSON format)
 new Property(Group, "string", "clothingSlot", {
     default: '',
-    label: "Clothing Slot",
+    label: "服装槽位",
     exposed: true,
     options: () => {
-        const { getActiveSlotNames } = require('./attachments/presets');
+        const { getActiveSlotNames, getSlotDisplayName } = require('./attachments/presets');
         const slots = getActiveSlotNames();
-        const options: {[key: string]: string} = { '': 'None' };
+        const options: {[key: string]: string} = { '': '无' };
         slots.forEach((slot: string) => {
-            options[slot] = slot;
+            options[slot] = getSlotDisplayName(slot, true);
         });
         return options;
     },
     inputs: {
         element_panel: {
             input: {
-                label: 'Clothing Slot',
+                label: '服装槽位',
                 type: 'select',
                 options: () => {
-                    const { getActiveSlotNames } = require('./attachments/presets');
+                    const { getActiveSlotNames, getSlotDisplayName } = require('./attachments/presets');
                     const slots = getActiveSlotNames();
-                    const options: {[key: string]: string} = { '': 'None' };
+                    const options: {[key: string]: string} = { '': '无' };
                     slots.forEach((slot: string) => {
-                        options[slot] = slot;
+                        options[slot] = getSlotDisplayName(slot, true);
                     });
                     return options;
                 }
@@ -187,12 +187,12 @@ registerOptionalInternalProperty(Group, 'vector2', 'vs_uv', value => isFiniteVec
 export const VS_CUBE_PROPS = [
     new Property(Cube, "string", "stepParentName", {
         default: '',
-        label: "Step Parent",
+        label: "步骤父级",
         exposed: true,
         inputs: {
             element_panel: {
                 input: {
-                    label: 'Step Parent',
+                    label: '步骤父级',
                     type: 'text'
                 }
             }
@@ -205,12 +205,12 @@ export const VS_CUBE_PROPS = [
     registerPaletteSlotProperty(Cube),
     new Property(Cube, "boolean", "shade", {
         default: true,
-        label: "Shade",
+        label: "阴影",
         exposed: true,
         inputs: {
             element_panel: {
                 input: {
-                    label: 'Shade',
+                    label: '阴影',
                     type: 'checkbox'
                 }
             }
@@ -218,12 +218,12 @@ export const VS_CUBE_PROPS = [
     }),
     new Property(Cube, "string", "climateColorMap", {
         default: '',
-        label: "Climate Color Map",
+        label: "气候颜色映射",
         exposed: true,
         inputs: {
             element_panel: {
                 input: {
-                    label: 'Climate Color Map',
+                    label: '气候颜色映射',
                     type: 'text'
                 }
             }
@@ -231,12 +231,12 @@ export const VS_CUBE_PROPS = [
     }),
     new Property(Cube, "boolean", "gradientShade", {
         default: false,
-        label: "Gradient Shade",
+        label: "渐变阴影",
         exposed: true,
         inputs: {
             element_panel: {
                 input: {
-                    label: 'Gradient Shade',
+                    label: '渐变阴影',
                     type: 'checkbox'
                 }
             }
@@ -244,32 +244,32 @@ export const VS_CUBE_PROPS = [
     }),
     new Property(Cube, "number", "renderPass", {
         default: -1,
-        label: "Render Pass",
+        label: "渲染通道",
         exposed: true,
         options: {
-            '-1': 'Default',
-            '0': 'Opaque',
-            '1': 'OpaqueNoCull',
-            '2': 'BlendNoCull',
-            '3': 'Transparent',
-            '4': 'Liquid',
-            '5': 'TopSoil',
-            '6': 'Meta',
+            '-1': '默认',
+            '0': '不透明',
+            '1': '不透明（无剔除）',
+            '2': '混合（无剔除）',
+            '3': '透明',
+            '4': '液体',
+            '5': '表层土壤',
+            '6': '元数据',
         },
         inputs: {
             element_panel: {
                 input: {
-                    label: 'Render Pass',
+                    label: '渲染通道',
                     type: 'select',
                     options: {
-                        '-1': 'Default',
-                        '0': 'Opaque',
-                        '1': 'OpaqueNoCull',
-                        '2': 'BlendNoCull',
-                        '3': 'Transparent',
-                        '4': 'Liquid',
-                        '5': 'TopSoil',
-                        '6': 'Meta',
+                        '-1': '默认',
+                        '0': '不透明',
+                        '1': '不透明（无剔除）',
+                        '2': '混合（无剔除）',
+                        '3': '透明',
+                        '4': '液体',
+                        '5': '表层土壤',
+                        '6': '元数据',
                     }
                 }
             }
@@ -277,12 +277,12 @@ export const VS_CUBE_PROPS = [
     }),
     new Property(Cube, "string", "seasonColorMap", {
         default: '',
-        label: "Season Color Map",
+        label: "季节颜色映射",
         exposed: true,
         inputs: {
             element_panel: {
                 input: {
-                    label: 'Season Color Map',
+                    label: '季节颜色映射',
                     type: 'text'
                 }
             }
@@ -290,22 +290,22 @@ export const VS_CUBE_PROPS = [
     }),
     new Property(Cube, "number", "unwrapMode", {
         default: 0,
-        label: "Unwrap Mode",
+        label: "UV 展开模式",
         exposed: false,
     }),
     new Property(Cube, "boolean", "autoUnwrap", {
         default: false,
-        label: "Auto Unwrap",
+        label: "自动展开 UV",
         exposed: false,
     }),
     new Property(Cube, "boolean", "disableRandomDrawOffset", {
         default: false,
-        label: "Disable Random Draw Offset",
+        label: "禁用随机绘制偏移",
         exposed: false,
     }),
     new Property(Cube, "number", "unwrapRotation", {
         default: 0,
-        label: "Unwrap Rotation",
+        label: "UV 展开旋转",
         exposed: false,
     }),
 ];
@@ -313,28 +313,28 @@ export const VS_CUBE_PROPS = [
 // Blockbench-only properties (not exported to VS JSON format)
 new Property(Cube, "string", "clothingSlot", {
     default: '',
-    label: "Clothing Slot",
+    label: "服装槽位",
     exposed: true,
     options: () => {
-        const { getActiveSlotNames } = require('./attachments/presets');
+        const { getActiveSlotNames, getSlotDisplayName } = require('./attachments/presets');
         const slots = getActiveSlotNames();
-        const options: {[key: string]: string} = { '': 'None' };
+        const options: {[key: string]: string} = { '': '无' };
         slots.forEach((slot: string) => {
-            options[slot] = slot;
+            options[slot] = getSlotDisplayName(slot, true);
         });
         return options;
     },
     inputs: {
         element_panel: {
             input: {
-                label: 'Clothing Slot',
+                label: '服装槽位',
                 type: 'select',
                 options: () => {
-                    const { getActiveSlotNames } = require('./attachments/presets');
+                    const { getActiveSlotNames, getSlotDisplayName } = require('./attachments/presets');
                     const slots = getActiveSlotNames();
-                    const options: {[key: string]: string} = { '': 'None' };
+                    const options: {[key: string]: string} = { '': '无' };
                     slots.forEach((slot: string) => {
-                        options[slot] = slot;
+                        options[slot] = getSlotDisplayName(slot, true);
                     });
                     return options;
                 }
@@ -361,12 +361,12 @@ registerOptionalInternalProperty(Cube, 'vector2', 'vs_uv', value => isFiniteVect
 export const VS_TEXTURE_PROPS = [
     new Property(Texture, "string", "textureLocation", {
         default: '',
-        label: "Texture Location",
+        label: "纹理位置",
         exposed: true,
         inputs: {
             element_panel: {
                 input: {
-                    label: 'Texture Location',
+                    label: '纹理位置',
                     type: 'text'
                 }
             }

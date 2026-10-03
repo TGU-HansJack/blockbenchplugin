@@ -40,18 +40,18 @@ createBlockbenchMod(
     {},
     _context => {
         const setting =  new Setting("game_path", {
-            name: "Game Path",
-            description: "The path to your Vintage Story game folder. This is the folder that contains the assets, mods and lib folders.",
+            name: "游戏路径",
+            description: "Vintage Story 游戏目录，包含 assets、mods 和 lib 文件夹。",
             category: "general",
             type: "click",
             icon: "fa-folder-plus",
             value: Settings.get("asset_path") || process.env.VINTAGE_STORY || "",
             click() {
                 new Dialog("gamePathSelect", {
-                    title: "Select Game Path",
+                    title: "选择游戏路径",
                     form: {
                         path: {
-                            label: "Path to your game folder",
+                            label: "游戏目录路径",
                             type: "folder",
                             value: Settings.get("game_path") || process.env.VINTAGE_STORY || "",
                         }
@@ -77,15 +77,15 @@ createBlockbenchMod(
     {},
     _context => {
         const presetSetting = new Setting("attachment_preset", {
-            name: "Attachment Preset",
-            description: "Choose the clothing/attachment slot system to use. Glint for Glint character customization, Vintage Story for Seraph models, or Custom for your own slots.",
+            name: "附件槽位预设",
+            description: "选择服装和附件槽位体系：Glint 用于角色自定义，Vintage Story 用于炽天使模型，也可以自定义槽位。",
             category: "general",
             type: "select",
             value: "glint",
             options: {
-                glint: "Glint (Outerwear, Top, Bottoms, Boots, etc.)",
-                vintage_story: "Vintage Story (Arm, Head, UpperBody, etc.)",
-                custom: "Custom (configure your own slots)"
+                glint: "Glint（外套、上衣、下装、鞋靴等）",
+                vintage_story: "Vintage Story（手臂、头部、上半身等）",
+                custom: "自定义（配置自己的槽位）"
             },
             onChange() {
                 // Refresh attachments panel when preset changes
@@ -111,8 +111,8 @@ createBlockbenchMod(
     {},
     _context => {
         const customSlotsSetting = new Setting("attachment_custom_slots", {
-            name: "Custom Attachment Slots",
-            description: "Define custom slot names (one per line) when using Custom preset. Example: Head, Torso, Legs, etc.",
+            name: "自定义附件槽位",
+            description: "使用自定义预设时设置槽位名称，每行一个，例如 Head、Torso、Legs。",
             category: "general",
             type: "click",
             icon: "fa-list",
@@ -120,10 +120,10 @@ createBlockbenchMod(
             condition: () => Settings.get("attachment_preset") === "custom",
             click() {
                 new Dialog("customSlotsEdit", {
-                    title: "Edit Custom Attachment Slots",
+                    title: "编辑自定义附件槽位",
                     form: {
                         slots: {
-                            label: "Slot Names (one per line)",
+                            label: "槽位名称（每行一个）",
                             type: "textarea",
                             value: (Settings.get("attachment_custom_slots") || []).join("\n"),
                         }
@@ -163,8 +163,8 @@ createBlockbenchMod(
     {},
     _context => {
         const setting = new Setting("vs_apply_model_offset", {
-            name: "Apply Model Offset",
-            description: "Apply [8, 0, 8] offset to exported models for Vintage Story engine centering. Disable if your models are already positioned correctly.",
+            name: "应用模型偏移",
+            description: "导出时应用 [8, 0, 8] 偏移，使模型在 Vintage Story 中居中。如果模型位置已正确，请关闭此项。",
             category: "general",
             type: "checkbox",
             value: true
@@ -181,8 +181,8 @@ createBlockbenchMod(
     {},
     _context => {
         const setting = new Setting("vs_export_textures", {
-            name: "Export Texture Files",
-            description: "Automatically save texture files to disk when exporting models. Disable to only include texture references in the JSON without saving the actual texture files.",
+            name: "导出纹理文件",
+            description: "导出模型时自动保存纹理文件。关闭后仅在 JSON 中保留纹理引用，不保存纹理文件。",
             category: "general",
             type: "checkbox",
             value: false
@@ -193,5 +193,4 @@ createBlockbenchMod(
         //context?.delete();
     }
 );
-
 

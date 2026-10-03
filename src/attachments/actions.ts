@@ -51,7 +51,7 @@ function createImportAction(config: ImportActionConfig) {
                 if (!files || !files.length) return;
 
                 const fileName = files[0]?.name || 'attachment';
-                Undo.initEdit({ outliner: true }, `Import attachment: ${fileName}`);
+                Undo.initEdit({ outliner: true }, `导入附件：${fileName}`);
 
                 const elementsBefore = new Set([...Group.all, ...Cube.all]);
 
@@ -62,7 +62,7 @@ function createImportAction(config: ImportActionConfig) {
 
                         if (!model || typeof model !== 'object') {
                             if (DEBUG) console.error(`[${config.logPrefix}] Invalid model data in file:`, file.path);
-                            Blockbench.showQuickMessage(`Failed to import ${file.name}: Invalid JSON structure`, QUICK_MESSAGE_DURATION);
+                            Blockbench.showQuickMessage(`导入 ${file.name} 失败：JSON 结构无效`, QUICK_MESSAGE_DURATION);
                             return;
                         }
 
@@ -76,7 +76,7 @@ function createImportAction(config: ImportActionConfig) {
                     } catch (err) {
                         if (DEBUG) console.error(`[${config.logPrefix}] Error importing file:`, file.path, err);
                         const errorMsg = err instanceof Error ? err.message : String(err);
-                        Blockbench.showQuickMessage(`Failed to import ${file.name}: ${errorMsg}`, QUICK_MESSAGE_DURATION);
+                        Blockbench.showQuickMessage(`导入 ${file.name} 失败：${errorMsg}`, QUICK_MESSAGE_DURATION);
                     }
                 });
 
@@ -119,8 +119,8 @@ export function createActions() {
 
     const importBBAction = createImportAction({
         id: 'import_bb_attachment',
-        name: 'Import BB Attachment',
-        description: 'Import and automatically parent a .bbmodel attachment file',
+        name: '导入 BB 附件',
+        description: '导入 .bbmodel 附件文件并自动设置父级',
         icon: 'fa-file-import',
         resource_id: 'model',
         extensions: [codec.extension],
@@ -131,11 +131,11 @@ export function createActions() {
 
     const importVSAction = createImportAction({
         id: 'import_vs_attachment',
-        name: 'Import VS Attachment',
-        description: 'Import and automatically parent a .json attachment file',
+        name: '导入 VS 附件',
+        description: '导入 .json 附件文件并自动设置父级',
         icon: 'fa-file-import',
         extensions: ['json'],
-        type: 'Vintage Story Shape',
+        type: 'Vintage Story 模型',
         logPrefix: 'Import VS',
         mergeFn: (model, filePath) => mergeVSAttachment(model as VS_Shape, filePath)
     });

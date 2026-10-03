@@ -1,4 +1,5 @@
 node_modules/
+.npm-cache/
 test_models/
 src/generated/
 docs/

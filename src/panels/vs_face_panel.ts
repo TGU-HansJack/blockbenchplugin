@@ -2,40 +2,40 @@ import { createBlockbenchMod } from "../util/moddingTools";
 import * as PACKAGE from "../../package.json";
 
 const WIND_MODE_OPTIONS: Record<string, string> = {
-    '-1': 'Default',
-    '0': 'NoWind',
-    '1': 'WeakWind',
-    '2': 'NormalWind',
-    '3': 'Leaves',
-    '4': 'Bend',
-    '5': 'TallBend',
-    '6': 'Water',
-    '7': 'ExtraWeakWind',
-    '8': 'Fruit',
-    '9': 'WeakWindNoBend',
-    '10': 'Vines',
-    '11': 'Seaweed',
-    '12': 'WaterWaves',
-    '13': 'WeakWindReducedAlpha',
+    '-1': '默认',
+    '0': '无风',
+    '1': '弱风',
+    '2': '普通风',
+    '3': '树叶',
+    '4': '弯曲',
+    '5': '高幅弯曲',
+    '6': '水',
+    '7': '极弱风',
+    '8': '果实',
+    '9': '弱风（不弯曲）',
+    '10': '藤蔓',
+    '11': '海草',
+    '12': '水波',
+    '13': '弱风（降低透明度）',
 };
 
 const REFLECTIVE_MODE_OPTIONS: Record<string, string> = {
-    '0': 'Not reflective',
-    '1': 'Weakly random reflective',
-    '2': 'Weakly reflective',
-    '3': 'Strongly reflective',
-    '4': 'Sparkly',
-    '5': 'Mild',
+    '0': '不反光',
+    '1': '轻微随机反光',
+    '2': '轻微反光',
+    '3': '强反光',
+    '4': '闪烁',
+    '5': '柔和',
 };
 
 const FACE_DIRECTIONS = ['north', 'east', 'south', 'west', 'up', 'down'] as const;
 const FACE_LABELS: Record<string, string> = {
-    north: 'N',
-    east: 'E',
-    south: 'S',
-    west: 'W',
-    up: 'U',
-    down: 'D',
+    north: '北',
+    east: '东',
+    south: '南',
+    west: '西',
+    up: '上',
+    down: '下',
 };
 
 // Colors matching VSMC Face.ColorsByFace * DefaultBlockSideBrightnessByFacing
@@ -163,7 +163,7 @@ function removeVertexDot() {
 const vueComponent = {
     template: `
         <div>
-            <p v-if="!selectedCube" class="vs_fp_message">Select a cube to edit face properties</p>
+            <p v-if="!selectedCube" class="vs_fp_message">请选择一个方块来编辑面的属性</p>
             <div v-else>
                 <div class="vs_fp_header">
                     <div class="vs_fp_face_buttons">
@@ -173,25 +173,25 @@ const vueComponent = {
                             @click="selectFace(dir)">{{ faceLabels[dir] }}</div>
                     </div>
                     <label class="vs_fp_apply_all">
-                        <input type="checkbox" v-model="applyToAll"> All
+                        <input type="checkbox" v-model="applyToAll"> 全部面
                     </label>
                 </div>
 
                 <div class="vs_fp_section">
-                    <label class="vs_fp_label">Glow Level (0-255)</label>
+                    <label class="vs_fp_label">发光强度（0-255）</label>
                     <input type="number" class="dark_bordered" min="0" max="255" step="1"
                         :value="glow" @input="setGlow($event.target.value)">
                 </div>
 
                 <div class="vs_fp_section">
-                    <label class="vs_fp_label">Reflective Mode</label>
+                    <label class="vs_fp_label">反光模式</label>
                     <select class="dark_bordered" :value="reflectiveMode" @change="setReflectiveMode($event.target.value)">
                         <option v-for="(label, value) in reflectiveModeOptions" :value="value" :key="value">{{ label }}</option>
                     </select>
                 </div>
 
                 <div class="vs_fp_section" v-for="i in 4" :key="'wm'+i">
-                    <label class="vs_fp_label">Wind Mode {{ i }}</label>
+                    <label class="vs_fp_label">风动模式 {{ i }}</label>
                     <select class="dark_bordered" :value="getWindModeComponent(i-1)" @change="setWindModeComponent(i-1, $event.target.value)"
                         @mouseenter="highlightVertex(i-1)" @mouseleave="clearVertex()"
                         @focus="highlightVertex(i-1)" @blur="clearVertex()">
@@ -200,7 +200,7 @@ const vueComponent = {
                 </div>
 
                 <div class="vs_fp_section">
-                    <label class="vs_fp_label">Wind Data</label>
+                    <label class="vs_fp_label">风动数据</label>
                     <input type="text" class="dark_bordered" :value="windDataDisplay" disabled>
                 </div>
             </div>
@@ -388,7 +388,7 @@ createBlockbenchMod(
     {},
     () => {
         panel = new Panel('vs_face_properties', {
-            name: 'VS Face Properties',
+            name: 'VS 面属性',
             icon: 'grain',
             condition: () => Format?.id === 'formatVS',
             default_position: {

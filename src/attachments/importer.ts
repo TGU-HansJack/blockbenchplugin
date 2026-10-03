@@ -242,7 +242,7 @@ export function mergeVSAttachment(content: VS_Shape, filePath?: string) {
 export function mergeBBModel(content: unknown, _filePath: string) {
     try {
         if (!isRecord(content)) {
-            Blockbench.showQuickMessage('Import failed: invalid .bbmodel content', 5000);
+            Blockbench.showQuickMessage('导入失败：.bbmodel 内容无效', 5000);
             return;
         }
 
@@ -320,6 +320,6 @@ export function mergeBBModel(content: unknown, _filePath: string) {
         logDebug(`[Import BB] Merge complete. Groups: ${Group.all.length}, Cubes: ${Cube.all.length}`);
     } catch (e) {
         console.error('[Import BB] CRITICAL ERROR in mergeBBModel:', e);
-        Blockbench.showQuickMessage(`Import failed: ${getErrorMessage(e)}`, 5000);
+        Blockbench.showQuickMessage(`导入失败：${getErrorMessage(e)}`, 5000);
     }
 }

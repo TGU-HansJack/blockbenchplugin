@@ -3,7 +3,7 @@ import { exportAttachmentsBB } from './export_attachment_bb';
 import { deleteSection, deleteSectionSafe } from './delete_section';
 import { findAttachments } from './discovery';
 import { DISCOVERY_DEBOUNCE_MS, MIN_TOUCH_TARGET_SIZE, QUICK_MESSAGE_DURATION } from './constants';
-import { getActiveSlotNames } from './presets';
+import { getActiveSlotNames, getSlotDisplayName } from './presets';
 import { getSlotInfo, getSlotCategory } from './slot_helpers';
 
 const DEBUG = false;
@@ -316,8 +316,8 @@ const vuePanel = {
             </style>
             <div v-if="sections.every(s => s.elements.length === 0)" class="panel_placeholder">
                 <i class="material-icons">folder</i>
-                <p>No attachments found in model.</p>
-                <p>Assign a "Clothing Slot" to a group or cube in the element panel.</p>
+                <p>模型中没有附件。</p>
+                <p>请在元素面板中为组或方块设置“服装槽位”。</p>
             </div>
             <div v-else>
                 <div v-for="section in sections.filter(s => s.elements.length > 0)" :key="section.slot" class="attachment-section">
@@ -328,30 +328,30 @@ const vuePanel = {
                             </i>
                             <span class="slot-badge" :style="{ backgroundColor: getSlotInfo(section.slot).color + '40', color: getSlotInfo(section.slot).color }">
                                 <i class="material-icons slot-icon">{{ getSlotInfo(section.slot).icon }}</i>
-                                <span class="slot-badge-text" style="font-size: 18px !important;">{{ section.slot }}: {{ section.elements.length }} {{ getSectionStats(section.elements) }}</span>
+                                <span class="slot-badge-text" style="font-size: 18px !important;">{{ getSlotDisplayName(section.slot) }}: {{ section.elements.length }} {{ getSectionStats(section.elements) }}</span>
                             </span>
                             
                             <span class="section-buttons">
-                                <i class="material-icons" @click.stop="selectSection(section.elements)" title="Select all elements in this section">select_all</i>
-                                <i class="material-icons" @click.stop="toggleVisibility(section.elements, !getSectionVisibility(section.elements))" :title="getSectionVisibility(section.elements) ? 'Hide all elements in this section' : 'Show all elements in this section'">
+                                <i class="material-icons" @click.stop="selectSection(section.elements)" title="选择此槽位的所有元素">select_all</i>
+                                <i class="material-icons" @click.stop="toggleVisibility(section.elements, !getSectionVisibility(section.elements))" :title="getSectionVisibility(section.elements) ? '隐藏此槽位的所有元素' : '显示此槽位的所有元素'">
                                     {{ getSectionVisibility(section.elements) ? 'visibility' : 'visibility_off' }}
                                 </i>
                                 <span class="action-divider"></span>
-                                <i class="material-icons" @click.stop="exportBB(section.elements)" title="Export to .bbmodel">save</i>
-                                <i class="material-icons" @click.stop="exportVS(section.elements)" title="Export as VS .json">file_download</i>
+                                <i class="material-icons" @click.stop="exportBB(section.elements)" title="导出为 .bbmodel">save</i>
+                                <i class="material-icons" @click.stop="exportVS(section.elements)" title="导出为 VS .json">file_download</i>
                                 <span class="action-divider"></span>
-                                <i class="material-icons" @click.stop="confirmDeleteMinusRoot(section.elements, section.slot)" title="Delete (-) Root: Delete attachments but preserve root groups" style="color: #4caf50;">remove_circle_outline</i>
-                                <i class="material-icons" @click.stop="confirmDelete(section.elements, section.slot)" title="Delete all elements in this section (including root groups)" style="color: #f44336;">delete</i>
+                                <i class="material-icons" @click.stop="confirmDeleteMinusRoot(section.elements, section.slot)" title="删除附件内容并保留根组" style="color: #4caf50;">remove_circle_outline</i>
+                                <i class="material-icons" @click.stop="confirmDelete(section.elements, section.slot)" title="删除此槽位的所有元素（包括根组）" style="color: #f44336;">delete</i>
                             </span>
                         </h2>
                         <div class="tooltip-content">
-                            <div><strong>{{ section.slot }}</strong></div>
+                            <div><strong>{{ getSlotDisplayName(section.slot) }}</strong></div>
                             <div style="margin-top: 4px; font-size: 11px; line-height: 1.4;">
                                 <span v-for="(element, index) in getFlattenedElementList(section.elements).slice(0, 10)" :key="element.uuid">
                                     {{ element.name }}<span v-if="index < Math.min(section.elements.length, 10) - 1">, </span>
                                 </span>
                                 <span v-if="section.elements.length > 10" style="opacity: 0.7;">
-                                    ... and {{ section.elements.length - 10 }} more
+                                    ……还有 {{ section.elements.length - 10 }} 个
                                 </span>
                             </div>
                         </div>
@@ -370,7 +370,7 @@ const vuePanel = {
                             </i>
                             <span class="element-name">
                                 {{ element.name }}
-                                <span v-if="isRecentlyImported(element)" class="modified-indicator" title="Recently imported">●</span>
+                                <span v-if="isRecentlyImported(element)" class="modified-indicator" title="最近导入">●</span>
                             </span>
                         </div>
                     </div>
@@ -384,6 +384,7 @@ const vuePanel = {
         hoveredSection: null as string | null
     }),
     methods: {
+        getSlotDisplayName,
         /**
          * Gets slot information for styling
          */
@@ -397,10 +398,10 @@ const vuePanel = {
             const groups = elements.filter(e => e instanceof Group).length;
             const cubes = elements.filter(e => e instanceof Cube).length;
             const parts: string[] = [];
-            if (groups > 0) parts.push(`${groups} Group${groups !== 1 ? 's' : ''}`);
-            if (cubes > 0) parts.push(`${cubes} Cube${cubes !== 1 ? 's' : ''}`);
-            if (parts.length === 0) return '(0 items)';
-            return `(${parts.join(', ')})`;
+            if (groups > 0) parts.push(`${groups} 个组`);
+            if (cubes > 0) parts.push(`${cubes} 个方块`);
+            if (parts.length === 0) return '（0 个元素）';
+            return `（${parts.join('，')}）`;
         },
         /**
          * Checks if element was recently imported
@@ -413,17 +414,17 @@ const vuePanel = {
          */
         getElementTooltip(element: any): string {
             const parts: string[] = [];
-            parts.push(element.name || 'Unnamed');
+            parts.push(element.name || '未命名');
             if (element instanceof Group) {
-                parts.push(`Group (${element.children?.length || 0} children)`);
+                parts.push(`组（${element.children?.length || 0} 个子元素）`);
             } else {
-                parts.push('Cube');
+                parts.push('方块');
             }
             if (element.clothingSlot) {
-                parts.push(`Slot: ${element.clothingSlot}`);
+                parts.push(`槽位：${getSlotDisplayName(element.clothingSlot)}`);
             }
             if (element.stepParentName) {
-                parts.push(`Step Parent: ${element.stepParentName}`);
+                parts.push(`步骤父级：${element.stepParentName}`);
             }
             return parts.join(' | ');
         },
@@ -468,7 +469,7 @@ const vuePanel = {
                 }, 100);
             } catch (e) {
                 const errorMsg = e instanceof Error ? e.message : String(e);
-                Blockbench.showQuickMessage(`Export failed: ${errorMsg}`, QUICK_MESSAGE_DURATION);
+                Blockbench.showQuickMessage(`导出失败：${errorMsg}`, QUICK_MESSAGE_DURATION);
                 if (DEBUG) console.error('Export BB error:', e);
                 (this as any).isExporting = false;
             }
@@ -488,7 +489,7 @@ const vuePanel = {
                 }, 100);
             } catch (e) {
                 const errorMsg = e instanceof Error ? e.message : String(e);
-                Blockbench.showQuickMessage(`Export failed: ${errorMsg}`, QUICK_MESSAGE_DURATION);
+                Blockbench.showQuickMessage(`导出失败：${errorMsg}`, QUICK_MESSAGE_DURATION);
                 if (DEBUG) console.error('Export VS error:', e);
                 (this as any).isExporting = false;
             }
@@ -497,7 +498,7 @@ const vuePanel = {
          * Confirms delete minus root (preserves root attachment groups and base model groups)
          */
         confirmDeleteMinusRoot(elements: any[], slotName: string) {
-            if (confirm(`Delete (-) Root in "${slotName}"?\n\nThis will delete attachment content but preserve:\n- Base model groups (like "Ears")\n- Root attachment groups (first level with clothingSlot)\n\nThis action cannot be undone.`)) {
+            if (confirm(`删除“${getSlotDisplayName(slotName)}”中的附件内容？\n\n将保留基础模型组（如“Ears”）和附件根组（首层具有服装槽位的组）。\n\n此操作无法撤销。`)) {
                 deleteSectionSafe(elements);
             }
         },
@@ -505,7 +506,7 @@ const vuePanel = {
          * Confirms deletion before deleting section (original behavior - deletes everything)
          */
         confirmDelete(elements: any[], slotName: string) {
-            if (confirm(`Are you sure you want to delete all ${elements.length} attachment(s) in "${slotName}"?\n\nThis will delete everything including base model groups.\n\nThis action cannot be undone.`)) {
+            if (confirm(`确定删除“${getSlotDisplayName(slotName)}”中的全部 ${elements.length} 个附件吗？\n\n基础模型组也会被删除。此操作无法撤销。`)) {
                 deleteSection(elements);
             }
         },
@@ -560,7 +561,7 @@ const vuePanel = {
             if (!elements || !Array.isArray(elements)) return;
 
             try {
-                Undo.initEdit({ outliner: true }, `Toggle visibility: ${elements.length} element(s)`);
+                Undo.initEdit({ outliner: true }, `切换 ${elements.length} 个元素的可见性`);
 
                 elements.forEach(element => {
                     if (!element) return;
@@ -578,12 +579,12 @@ const vuePanel = {
                     }
                 });
 
-                Undo.finishEdit('Toggle visibility');
+                Undo.finishEdit('切换可见性');
                 Canvas.updateVisibility?.();
                 Canvas.updateAll?.();
             } catch (e) {
                 if (DEBUG) console.error('Error in toggleVisibility:', e);
-                Blockbench.showQuickMessage('Failed to toggle visibility', QUICK_MESSAGE_DURATION);
+                Blockbench.showQuickMessage('切换可见性失败', QUICK_MESSAGE_DURATION);
             }
         },
         /**
@@ -672,7 +673,7 @@ export function createAttachmentsPanel(actions: any) {
     }
 
     const panel = new Panel('attachments_panel', {
-        name: 'Attachments',
+        name: '附件',
         icon: 'attach_file',
         default_position: {
             slot: 'right_bar',

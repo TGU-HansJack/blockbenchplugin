@@ -123,7 +123,7 @@ export function createExportCodec() {
     }
 
     return new Codec('projectSelection', {
-        name: 'Blockbench Project Selection',
+        name: 'Blockbench 项目选区',
         extension: 'bbmodel',
         remember: true,
         export(selection: any[]) {

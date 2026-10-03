@@ -1,5 +1,5 @@
 
-import { getActiveSlotNames } from './presets';
+import { getActiveSlotNames, getSlotDisplayName } from './presets';
 import { suggestSlotFromName, getSlotInfo } from './slot_helpers';
 import { QUICK_MESSAGE_DURATION } from './constants';
 
@@ -149,35 +149,35 @@ export function showClothingSlotDialog(
         // Create options for the dialog with visual indicators
         const options: { [key: string]: string } = {};
         availableSlots.forEach(slot => {
-            let label = slot;
-            if (slot === rememberedSlot) label += ' (remembered)';
-            else if (slot === inferredSlot) label += ' (detected from path)';
-            else if (preview && preview.detectedSlots.includes(slot)) label += ' (suggested)';
+            let label = getSlotDisplayName(slot, true);
+            if (slot === rememberedSlot) label += '（上次选择）';
+            else if (slot === inferredSlot) label += '（从路径识别）';
+            else if (preview && preview.detectedSlots.includes(slot)) label += '（推荐）';
             options[slot] = label;
         });
 
         // Add a "None" option
-        options[''] = '(None)';
+        options[''] = '（无）';
 
         const previewHtml = preview ? `
             <div style="margin: 12px 0; padding: 12px; background: rgba(255, 255, 255, 0.05); border-radius: 4px;">
-                <div style="font-weight: 500; margin-bottom: 8px;">Import Preview:</div>
+                <div style="font-weight: 500; margin-bottom: 8px;">导入预览：</div>
                 <div style="font-size: 12px; line-height: 1.6;">
-                    <div>• ${preview.elementCount} element(s) (${preview.groupCount} groups, ${preview.cubeCount} cubes)</div>
-                    <div>• ${preview.textureCount} texture(s)</div>
-                    ${preview.detectedSlots.length > 0 ? `<div>• Detected slots: ${preview.detectedSlots.join(', ')}</div>` : ''}
-                    ${preview.elementNames.length > 0 ? `<div style="margin-top: 8px; opacity: 0.8;">Elements: ${preview.elementNames.slice(0, 5).join(', ')}${preview.elementNames.length > 5 ? '...' : ''}</div>` : ''}
+                    <div>• ${preview.elementCount} 个元素（${preview.groupCount} 个组，${preview.cubeCount} 个方块）</div>
+                    <div>• ${preview.textureCount} 张纹理</div>
+                    ${preview.detectedSlots.length > 0 ? `<div>• 识别到的槽位：${preview.detectedSlots.map(getSlotDisplayName).join('、')}</div>` : ''}
+                    ${preview.elementNames.length > 0 ? `<div style="margin-top: 8px; opacity: 0.8;">元素：${preview.elementNames.slice(0, 5).join('、')}${preview.elementNames.length > 5 ? '…' : ''}</div>` : ''}
                 </div>
             </div>
         ` : '';
 
         new Dialog({
             id: 'clothing_slot_selector',
-            title: 'Import Attachment',
+            title: '导入附件',
             component: {
                 template: `
                     <div>
-                        <p>Choose the clothing slot for imported elements from:</p>
+                        <p>为以下文件导入的元素选择服装槽位：</p>
                         <p style="font-weight: 500; margin: 8px 0;">${fileName}</p>
                         ${previewHtml}
                     </div>
@@ -185,13 +185,13 @@ export function showClothingSlotDialog(
             },
             form: {
                 clothing_slot: {
-                    label: 'Clothing Slot',
+                    label: '服装槽位',
                     type: 'select',
                     options: options,
                     value: defaultSlot
                 },
                 remember_choice: {
-                    label: 'Remember this choice for similar files',
+                    label: '对类似文件记住此选择',
                     type: 'checkbox',
                     value: !!rememberedSlot
                 }

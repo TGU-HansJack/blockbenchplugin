@@ -81,7 +81,7 @@ function compile_file(animations: _Animation[]): VS_AnimationLibrary {
 function pick_file(): void {
     Blockbench.import({
         resource_id: 'vs_animation',
-        type: 'Vintage Story Animation',
+        type: 'Vintage Story 动画',
         extensions: ['json'],
         multiple: true,
         startpath: default_animations_dir(),
@@ -105,8 +105,8 @@ function write_animation_to_library(animation: _Animation): void {
     const vsAnim = compile_animation(animation);
     if (!vsAnim) {
         Blockbench.showMessageBox({
-            title: 'Nothing to save',
-            message: `Animation "${animation.name}" has no keyframes to export.`
+            title: '没有可保存的内容',
+            message: `动画“${animation.name}”没有可导出的关键帧。`
         });
         return;
     }
@@ -145,7 +145,7 @@ function write_animation_to_library(animation: _Animation): void {
         animation.path = real_path;
         // Without this a silently skipped save (e.g. clicking a greyed-out button) is
         // indistinguishable from a successful one.
-        Blockbench.showQuickMessage(`Saved "${animation.name}" to ${basename_no_ext(real_path)}.json`, 2000);
+        Blockbench.showQuickMessage(`动画“${animation.name}”已保存到 ${basename_no_ext(real_path)}.json`, 2000);
     });
 }
 
@@ -154,7 +154,7 @@ function save_animation(animation: _Animation, save_as?: boolean): void {
     if (!animation.path || save_as) {
         Blockbench.export({
             resource_id: 'vs_animation',
-            type: 'Vintage Story Animation',
+            type: 'Vintage Story 动画',
             extensions: ['json'],
             name: animation.saved_name || animation.name,
             startpath: animation.path || default_animations_dir(),
@@ -193,7 +193,7 @@ function export_file(path: string, save_as?: boolean): void {
     // group's save button turns inline animations into a library file group.
     Blockbench.export({
         resource_id: 'vs_animation',
-        type: 'Vintage Story Animation',
+        type: 'Vintage Story 动画',
         extensions: ['json'],
         name: (filterPath && basename_no_ext(filterPath)) || 'animations',
         startpath: filterPath || default_animations_dir(),

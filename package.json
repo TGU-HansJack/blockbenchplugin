@@ -1,8 +1,8 @@
 {
   "type": "module",
   "name": "vintagestory",
-  "title": "Vintage Story Format Support",
-  "description": "A Blockbench plugin that adds support for Vintage Story models",
+  "title": "Vintage Story 格式支持",
+  "description": "为 Blockbench 添加 Vintage Story 模型格式支持",
   "version": "0.12.1",
   "author": {
     "name": "Anego Studios",

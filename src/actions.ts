@@ -12,14 +12,14 @@ const fs = requireNativeModule('fs');
 const path = requireNativeModule('path');
 
 const export_action = createAction(`${PACKAGE.name}:export_vs`, {
-    name: 'Export into VS Format',
+    name: '导出为 VS 格式',
     icon: 'icon.png',
     condition() {
         return is_vs_project(Project);
     },
     click: function () {
         if (!Project) {
-            throw new Error("No project loaded during export");
+            throw new Error("导出时没有已打开的项目");
         }
 
         // Use Blockbench's file save dialog with custom_writer to avoid
@@ -35,12 +35,12 @@ const export_action = createAction(`${PACKAGE.name}:export_vs`, {
                     const data = ex({ path: exportPath, exportDir: exportDir });
                     const jsonContent = autoStringify(data);
                     fs.writeFileSync(exportPath, jsonContent);
-                    Blockbench.showQuickMessage('Model and textures exported successfully');
+                    Blockbench.showQuickMessage('模型和纹理导出成功');
                 } catch (e) {
                     console.error('[VS Export] Export failed:', e);
                     Blockbench.showMessageBox({
-                        title: 'VS Export Error',
-                        message: `Export failed: ${e instanceof Error ? e.message : String(e)}`
+                        title: 'VS 导出错误',
+                        message: `导出失败：${e instanceof Error ? e.message : String(e)}`
                     });
                 }
             }
@@ -50,7 +50,7 @@ const export_action = createAction(`${PACKAGE.name}:export_vs`, {
 MenuBar.addAction(export_action, 'file.export');
 
 const import_action = createAction(`${PACKAGE.name}:import_vs`, {
-    name: 'Import from VS Format',
+    name: '从 VS 格式导入',
     icon: 'icon.png',
     condition() {
         return is_vs_project(Project);
@@ -68,7 +68,7 @@ const import_action = createAction(`${PACKAGE.name}:import_vs`, {
 MenuBar.addAction(import_action, 'file.import');
 
 const import_backdrop_action = createAction(`${PACKAGE.name}:import_backdrop_action`, {
-    name: 'Import Backdrop from VS Format',
+    name: '从 VS 格式导入背景模型',
     icon: 'icon.png',
     condition() {
         return is_vs_project(Project);
@@ -79,7 +79,7 @@ const import_backdrop_action = createAction(`${PACKAGE.name}:import_backdrop_act
             extensions: ['json'],
         }, function (files) {
             if (is_backdrop_project()) {
-                Blockbench.showQuickMessage("There is already a backdrop in this project.");
+                Blockbench.showQuickMessage("此项目已有背景模型。");
             } else {
                 im(autoParseJSON(files[0].content as string), files[0].path, true);
             }

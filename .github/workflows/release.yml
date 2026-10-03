@@ -1,75 +1,54 @@
 name: Release
 
-on: 
+on:
   workflow_dispatch:
     inputs:
       release_type:
-        description: 'release type (major,minor,patch)'
+        description: 'Version increment'
         required: true
-      release_description: 
+        type: choice
+        options: [patch, minor, major]
+      release_description:
+        description: 'Release notes'
         required: true
+        type: string
+
+permissions:
+  contents: write
 
 jobs:
   release:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [22.x,]
-
     steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-    - uses: actions/checkout@v4
+      - name: Get next version
+        uses: reecetech/version-increment@2024.10.1
+        id: version
+        with:
+          scheme: semver
+          increment: ${{ inputs.release_type }}
 
-    - name: Get next version
-      uses: reecetech/version-increment@2024.10.1
-      id: version
-      with:
-        scheme: semver
-        increment: ${{ github.event.inputs.release_type }}
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
 
+      - name: Build
+        env:
+          RELEASE_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          npm ci
+          npm version "$RELEASE_VERSION" --no-git-tag-version
+          npm run gen_schema
+          npm run build
 
-
-    - name: Replace Version Number
-      uses: jacobtomlinson/gha-find-replace@v3
-      with:
-        include: '**/vs_plugin.js'
-        find: >-
-          version: '(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)'
-        replace: >-
-          version: '${{ steps.version.outputs.major-version }}.${{ steps.version.outputs.minor-version }}.${{ steps.version.outputs.patch-version }}'
-        regex: true
-
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-
-    - name: Build
-      run: |
-        npm install
-        npm run gen_schema
-        npm run build --mode=prod
-
-    - name: release
-      uses: actions/create-release@v1
-      id: create_release
-      with:
-        draft: true
-        prerelease: false
-        release_name: ${{ steps.version.outputs.version }}
-        tag_name: ${{ steps.version.outputs.version }}
-        body: ${{ github.event.inputs.release_description }}
-        #body_path: CHANGELOG.md
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
-
-    - name: upload artifact
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./dist/vs_plugin.js
-        asset_name: vs_plugin.js
-        asset_content_type: application/zip
+      - name: Create draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_VERSION: ${{ steps.version.outputs.version }}
+          RELEASE_NOTES: ${{ inputs.release_description }}
+        run: gh release create "$RELEASE_VERSION" dist/vintagestory.js --draft --title "$RELEASE_VERSION" --notes "$RELEASE_NOTES"

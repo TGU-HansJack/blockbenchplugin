@@ -17,7 +17,7 @@ function init() {
         
     deletables.push(actions.importBB, actions.importVS, panel);
     const attachment_mode = new Mode('attachments', {
-        name: 'Attachments',
+        name: '附件',
         onSelect: () => {
             findAttachments();
         }

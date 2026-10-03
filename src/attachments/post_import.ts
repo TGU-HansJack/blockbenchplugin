@@ -413,7 +413,7 @@ export async function processImportedAttachments(elementsBefore: Set<any>, fileP
     if (!masterSlot) {
         if (DEBUG) console.log(`[${logPrefix}] Import cancelled.`);
         newElements.forEach(e => e.remove());
-        Blockbench.showQuickMessage('Import cancelled', QUICK_MESSAGE_DURATION);
+        Blockbench.showQuickMessage('已取消导入', QUICK_MESSAGE_DURATION);
         return;
     }
 
@@ -427,7 +427,7 @@ export async function processImportedAttachments(elementsBefore: Set<any>, fileP
     // 3. Smart Match: New groups -> Old groups with same slot
     const matchCount = smartMatchGroups(newElements, newElementsSet, elementsBefore, logPrefix);
     if (matchCount > 0) {
-        Blockbench.showQuickMessage(`Matched ${matchCount} groups`, QUICK_MESSAGE_DURATION);
+        Blockbench.showQuickMessage(`已匹配 ${matchCount} 个组`, QUICK_MESSAGE_DURATION);
     }
 
     // 4. Hierarchical Match: New groups -> Old groups with same name/path
@@ -442,7 +442,7 @@ export async function processImportedAttachments(elementsBefore: Set<any>, fileP
     // 7. Cleanup Duplicates
     mergeDuplicateGroups(newElementsSet, logPrefix);
 
-    Undo.finishEdit(`Import attachment: ${filePath.split(/[/\\]/).pop()}`);
+    Undo.finishEdit(`导入附件：${filePath.split(/[/\\]/).pop()}`);
     Canvas.updateAll();
     if (typeof updateSelection === 'function') updateSelection();
 }

@@ -490,7 +490,7 @@ function findTopmostAttachmentRoot(element: any, clothingSlot: string): Group | 
  */
 export function exportAttachmentsVS(selection: Group[]) {
     if (!selection || selection.length === 0) {
-        Blockbench.showQuickMessage("Please select one or more attachments to export.", QUICK_MESSAGE_DURATION);
+        Blockbench.showQuickMessage("请至少选择一个要导出的附件。", QUICK_MESSAGE_DURATION);
         return;
     }
 
@@ -631,7 +631,7 @@ export function exportAttachmentsVS(selection: Group[]) {
                     console.warn(`[VS Attachment Export] No distinct socket or stored socket transform found for "${group.name}" -> "${stepParentName}". Preserving legacy rotation.`);
                     if (!warnedMissingSocketTransform) {
                         warnedMissingSocketTransform = true;
-                        Blockbench.showQuickMessage('Some legacy attachments have no stored socket transform; rotation was preserved as authored.', 5000);
+                        Blockbench.showQuickMessage('部分旧版附件没有保存插槽变换；已保留原始旋转。', 5000);
                     }
                 }
             }
@@ -779,7 +779,7 @@ export function exportAttachmentsVS(selection: Group[]) {
                 } catch (e) {
                     console.error('[VS Attachment Export] Error reading existing file:', e);
                     // Warn user about malformed JSON
-                    Blockbench.showQuickMessage('Warning: Existing file has invalid JSON. Using project textures instead.', 3000);
+                    Blockbench.showQuickMessage('警告：现有文件的 JSON 无效，改用项目纹理。', 3000);
                     // Fall back to current project textures (filtered to used textures)
                     populateTexturesFromProject(data, usedTextureNames);
                 }
@@ -798,10 +798,10 @@ export function exportAttachmentsVS(selection: Group[]) {
             try {
                 fs.writeFileSync(path, finalContent, 'utf8');
                 logDebug(`[VS Attachment Export] Successfully wrote file: ${path}`);
-                Blockbench.showQuickMessage(`Exported attachment to ${path.split(/[/\\]/).pop()}`, 2000);
+                Blockbench.showQuickMessage(`附件已导出到 ${path.split(/[/\\]/).pop()}`, 2000);
             } catch (e) {
                 console.error('[VS Attachment Export] Error writing file:', e);
-                Blockbench.showQuickMessage(`Failed to write file: ${e instanceof Error ? e.message : String(e)}`, 5000);
+                Blockbench.showQuickMessage(`写入文件失败：${e instanceof Error ? e.message : String(e)}`, 5000);
             }
         }
     });

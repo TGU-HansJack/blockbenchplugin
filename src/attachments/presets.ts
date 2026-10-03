@@ -13,7 +13,7 @@ export interface AttachmentPreset {
  */
 export const GLINT_PRESET: AttachmentPreset = {
     name: "Glint",
-    description: "Glint character customization slots",
+    description: "Glint 角色自定义槽位",
     slots: [
         'Outerwear',
         'Top',
@@ -38,7 +38,7 @@ export const GLINT_PRESET: AttachmentPreset = {
  */
 export const VINTAGE_STORY_PRESET: AttachmentPreset = {
     name: "Vintage Story",
-    description: "Vintage Story Seraph clothing and armor slots",
+    description: "Vintage Story 炽天使服装及护甲槽位",
     slots: [
         // Clothing slots
         'Arm',
@@ -70,6 +70,23 @@ export const PRESETS: { [key: string]: AttachmentPreset } = {
     'glint': GLINT_PRESET,
     'vintage_story': VINTAGE_STORY_PRESET
 };
+
+const SLOT_LABELS: Record<string, string> = {
+    Outerwear: '外套', Top: '上衣', Bottoms: '下装', Shoes: '鞋',
+    Gloves: '手套', Headwear: '头饰', Eyebrows: '眉毛', Eyes: '眼睛',
+    Nose: '鼻子', Mouth: '嘴巴', FacialHair: '胡须', Earrings: '耳饰',
+    Ears: '耳朵', FaceItem: '面部饰品', Hair: '头发', Arm: '手臂',
+    Emblem: '徽章', Face: '面部', Foot: '脚', Hand: '手', Head: '头部',
+    LowerBody: '下半身', Neck: '颈部', Shoulder: '肩部', UpperBody: '上半身',
+    UpperBodyOver: '上半身外层', Waist: '腰部',
+    'Armor Body': '身体护甲', 'Armor Head': '头部护甲', 'Armor Legs': '腿部护甲'
+};
+
+export function getSlotDisplayName(slot: string, includeCode = false): string {
+    const label = SLOT_LABELS[slot];
+    if (!label) return slot;
+    return includeCode ? `${label} (${slot})` : label;
+}
 
 /**
  * Path segment to slot name mappings for different systems.

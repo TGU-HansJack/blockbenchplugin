@@ -3,7 +3,7 @@ import { vsAnimationCodec } from "./animation_codec";
 
 export function create_format(): ModelFormat { 
     const format =  new ModelFormat("formatVS", {
-        name: "Vintage Story Base Format",
+        name: "Vintage Story 基础格式",
         codec: codecVS,
         icon: "icon.png",
         box_uv: false,

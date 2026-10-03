@@ -9,7 +9,7 @@ import { clear_animations } from "./import_animation";
 // remains as a convenience action here.
 
 const clear_animations_action = createAction(`${PACKAGE.name}:clear_animations_vs`, {
-    name: 'Clear All Animations',
+    name: '清除所有动画',
     icon: 'delete_sweep',
     condition() {
         return is_vs_project(Project);
@@ -17,14 +17,14 @@ const clear_animations_action = createAction(`${PACKAGE.name}:clear_animations_v
     click: function () {
         const total = (Animation as unknown as typeof _Animation).all.length;
         if (total === 0) {
-            Blockbench.showQuickMessage('No animations to clear');
+            Blockbench.showQuickMessage('没有可清除的动画');
             return;
         }
-        if (!confirm(`Delete all ${total} animation${total === 1 ? '' : 's'} from this project?\n\nThis can be undone with Ctrl+Z.`)) {
+        if (!confirm(`确定删除此项目中的全部 ${total} 个动画吗？\n\n可使用 Ctrl+Z 撤销。`)) {
             return;
         }
         const removed = clear_animations();
-        Blockbench.showQuickMessage(`Cleared ${removed} animation${removed === 1 ? '' : 's'}`);
+        Blockbench.showQuickMessage(`已清除 ${removed} 个动画`);
     }
 });
 MenuBar.addAction(clear_animations_action, 'edit');
