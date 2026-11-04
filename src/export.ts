@@ -66,7 +66,7 @@ function saveTextureToFile(texture: Texture, textureDir: string, textureSubPath:
 export function ex(options): VS_Shape {
 
     if(!Project) {
-        throw new Error("No project loaded during export");
+        throw new Error("导出时未加载项目");
     }
 
     // Get export path and directory from options

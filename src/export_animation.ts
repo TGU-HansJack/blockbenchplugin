@@ -569,11 +569,11 @@ function parseTextureSwapScript(script: string): Record<string, string> | null {
 
 function display_animation_length_warning(animation_name: string) {
     Blockbench.showMessageBox({
-        title: 'Animation Length Warning',
+        title: '动画长度警告',
         message:
-            `The animation "${animation_name}" has keyframes on or past the last frame. ` +
-            `This may not animate correctly in Vintage Story. ` +
-            `Consider moving the keyframes away from the last frame if you experience issues.`
+            `动画“${animation_name}”中有关键帧位于最后一帧或超出最后一帧。` +
+            `这可能导致动画在 Vintage Story 中无法正常播放。` +
+            `如果遇到问题，请将这些关键帧移到最后一帧之前。`
     });
 }
 
@@ -583,12 +583,12 @@ function display_catmull_conversion_notice(animation_names: string[]) {
         : animation_names.map(name => `"${name}"`).join(', ');
 
     Blockbench.showMessageBox({
-        title: 'Catmull-Rom Converted to Bezier',
+        title: '已将 Catmull-Rom 转换为贝塞尔曲线',
         message:
-            `The following animation(s) had catmull-rom keyframes: ${animationList}\n\n` +
-            `Vintage Story has no native catmull-rom mode, so these keyframes were exported ` +
-            `as bezier with tangents computed from neighbouring keyframes. The curve is ` +
-            `preserved (exact for uniform keyframe spacing, close otherwise). No action needed.`
+            `以下动画包含 Catmull-Rom 关键帧：${animationList}\n\n` +
+            `Vintage Story 原生不支持 Catmull-Rom 模式，因此这些关键帧已转换为` +
+            `贝塞尔曲线导出，切线根据相邻关键帧计算。曲线形状会尽量保留` +
+            `（关键帧等间距时完全一致，否则近似）。无需额外操作。`
     });
 }
 

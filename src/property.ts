@@ -1,4 +1,5 @@
 import { VS_Direction, VS_Face, VS_ReflectiveMode } from "./vs_shape_def";
+import { getSlotLabel } from "./attachments/slot_labels";
 
 for (const name of ['vs_code', 'vs_onActivityStopped', 'vs_onAnimationEnd', 'vs_library_ref']) {
     new Property(Blockbench.Animation, 'string', name, { exposed: false });
@@ -81,7 +82,7 @@ function registerStepParentTransformProperties(targetClass: any) {
 }
 
 const PALETTE_SLOT_OPTIONS = {
-    '0': '0 - Inherit / Default',
+    '0': '0 - 继承 / 默认',
     '1': '1',
     '2': '2',
     '3': '3',
@@ -94,13 +95,13 @@ const PALETTE_SLOT_OPTIONS = {
 function registerPaletteSlotProperty(targetClass: any) {
     const property = new Property(targetClass, 'number', 'paletteSlot', {
         default: 0,
-        label: 'Palette Slot',
+        label: '调色板槽位',
         exposed: true,
         options: PALETTE_SLOT_OPTIONS,
         inputs: {
             element_panel: {
                 input: {
-                    label: 'Palette Slot',
+                    label: '调色板槽位',
                     type: 'select',
                     options: PALETTE_SLOT_OPTIONS,
                 },
@@ -114,12 +115,12 @@ function registerPaletteSlotProperty(targetClass: any) {
 function registerNoOutlineProperty(targetClass: any) {
     const property = new Property(targetClass, 'boolean', 'noOutline', {
         default: false,
-        label: 'No Outline',
+        label: '无轮廓线',
         exposed: true,
         inputs: {
             element_panel: {
                 input: {
-                    label: 'No Outline',
+                    label: '无轮廓线',
                     type: 'checkbox',
                 },
             },
@@ -132,12 +133,12 @@ function registerNoOutlineProperty(targetClass: any) {
 export const VS_GROUP_PROPS = [
     new Property(Group, "string", "stepParentName", {
         default: '',
-        label: "Step Parent",
+        label: "挂接父级",
         exposed: true,
         inputs: {
             element_panel: {
                 input: {
-                    label: 'Step Parent',
+                    label: '挂接父级',
                     type: 'text'
                 }
             }
@@ -154,28 +155,28 @@ export const VS_GROUP_PROPS = [
 // Blockbench-only properties (not exported to VS JSON format)
 new Property(Group, "string", "clothingSlot", {
     default: '',
-    label: "Clothing Slot",
+    label: "服装槽位",
     exposed: true,
     options: () => {
         const { getActiveSlotNames } = require('./attachments/presets');
         const slots = getActiveSlotNames();
-        const options: {[key: string]: string} = { '': 'None' };
+        const options: {[key: string]: string} = { '': '无' };
         slots.forEach((slot: string) => {
-            options[slot] = slot;
+            options[slot] = getSlotLabel(slot);
         });
         return options;
     },
     inputs: {
         element_panel: {
             input: {
-                label: 'Clothing Slot',
+                label: '服装槽位',
                 type: 'select',
                 options: () => {
                     const { getActiveSlotNames } = require('./attachments/presets');
                     const slots = getActiveSlotNames();
-                    const options: {[key: string]: string} = { '': 'None' };
+                    const options: {[key: string]: string} = { '': '无' };
                     slots.forEach((slot: string) => {
-                        options[slot] = slot;
+                        options[slot] = getSlotLabel(slot);
                     });
                     return options;
                 }
@@ -193,7 +194,7 @@ new Property(Group, "string", "clothingSlot", {
     },
 });
 
-new Property(Group, "boolean", "backdrop");
+new Property(Group, "boolean", "backdrop", { label: '背景模型' });
 
 // Blockbench-only attachment round-trip metadata. The boolean flags gate the
 // vector values so their default [0, 0, 0] cannot be mistaken for authored data.
@@ -211,12 +212,12 @@ registerOptionalInternalProperty(Group, 'object', 'vs_extra_props', isNonEmptyRe
 export const VS_CUBE_PROPS = [
     new Property(Cube, "string", "stepParentName", {
         default: '',
-        label: "Step Parent",
+        label: "挂接父级",
         exposed: true,
         inputs: {
             element_panel: {
                 input: {
-                    label: 'Step Parent',
+                    label: '挂接父级',
                     type: 'text'
                 }
             }
@@ -230,12 +231,12 @@ export const VS_CUBE_PROPS = [
     registerNoOutlineProperty(Cube),
     new Property(Cube, "boolean", "shade", {
         default: true,
-        label: "Shade",
+        label: "阴影",
         exposed: true,
         inputs: {
             element_panel: {
                 input: {
-                    label: 'Shade',
+                    label: '阴影',
                     type: 'checkbox'
                 }
             }
@@ -243,12 +244,12 @@ export const VS_CUBE_PROPS = [
     }),
     new Property(Cube, "string", "climateColorMap", {
         default: '',
-        label: "Climate Color Map",
+        label: "气候颜色映射",
         exposed: true,
         inputs: {
             element_panel: {
                 input: {
-                    label: 'Climate Color Map',
+                    label: '气候颜色映射',
                     type: 'text'
                 }
             }
@@ -256,12 +257,12 @@ export const VS_CUBE_PROPS = [
     }),
     new Property(Cube, "boolean", "gradientShade", {
         default: false,
-        label: "Gradient Shade",
+        label: "渐变阴影",
         exposed: true,
         inputs: {
             element_panel: {
                 input: {
-                    label: 'Gradient Shade',
+                    label: '渐变阴影',
                     type: 'checkbox'
                 }
             }
@@ -269,32 +270,32 @@ export const VS_CUBE_PROPS = [
     }),
     new Property(Cube, "number", "renderPass", {
         default: -1,
-        label: "Render Pass",
+        label: "渲染通道",
         exposed: true,
         options: {
-            '-1': 'Default',
-            '0': 'Opaque',
-            '1': 'OpaqueNoCull',
-            '2': 'BlendNoCull',
-            '3': 'Transparent',
-            '4': 'Liquid',
-            '5': 'TopSoil',
-            '6': 'Meta',
+            '-1': '默认',
+            '0': '不透明',
+            '1': '不透明（不剔除背面）',
+            '2': '混合（不剔除背面）',
+            '3': '透明',
+            '4': '液体',
+            '5': '表层土壤',
+            '6': '元数据',
         },
         inputs: {
             element_panel: {
                 input: {
-                    label: 'Render Pass',
+                    label: '渲染通道',
                     type: 'select',
                     options: {
-                        '-1': 'Default',
-                        '0': 'Opaque',
-                        '1': 'OpaqueNoCull',
-                        '2': 'BlendNoCull',
-                        '3': 'Transparent',
-                        '4': 'Liquid',
-                        '5': 'TopSoil',
-                        '6': 'Meta',
+                        '-1': '默认',
+                        '0': '不透明',
+                        '1': '不透明（不剔除背面）',
+                        '2': '混合（不剔除背面）',
+                        '3': '透明',
+                        '4': '液体',
+                        '5': '表层土壤',
+                        '6': '元数据',
                     }
                 }
             }
@@ -302,12 +303,12 @@ export const VS_CUBE_PROPS = [
     }),
     new Property(Cube, "string", "seasonColorMap", {
         default: '',
-        label: "Season Color Map",
+        label: "季节颜色映射",
         exposed: true,
         inputs: {
             element_panel: {
                 input: {
-                    label: 'Season Color Map',
+                    label: '季节颜色映射',
                     type: 'text'
                 }
             }
@@ -315,22 +316,22 @@ export const VS_CUBE_PROPS = [
     }),
     new Property(Cube, "number", "unwrapMode", {
         default: 0,
-        label: "Unwrap Mode",
+        label: "UV 展开模式",
         exposed: false,
     }),
     new Property(Cube, "boolean", "autoUnwrap", {
         default: false,
-        label: "Auto Unwrap",
+        label: "自动展开 UV",
         exposed: false,
     }),
     new Property(Cube, "boolean", "disableRandomDrawOffset", {
         default: false,
-        label: "Disable Random Draw Offset",
+        label: "禁用随机绘制偏移",
         exposed: false,
     }),
     new Property(Cube, "number", "unwrapRotation", {
         default: 0,
-        label: "Unwrap Rotation",
+        label: "UV 展开旋转",
         exposed: false,
     }),
 ];
@@ -338,28 +339,28 @@ export const VS_CUBE_PROPS = [
 // Blockbench-only properties (not exported to VS JSON format)
 new Property(Cube, "string", "clothingSlot", {
     default: '',
-    label: "Clothing Slot",
+    label: "服装槽位",
     exposed: true,
     options: () => {
         const { getActiveSlotNames } = require('./attachments/presets');
         const slots = getActiveSlotNames();
-        const options: {[key: string]: string} = { '': 'None' };
+        const options: {[key: string]: string} = { '': '无' };
         slots.forEach((slot: string) => {
-            options[slot] = slot;
+            options[slot] = getSlotLabel(slot);
         });
         return options;
     },
     inputs: {
         element_panel: {
             input: {
-                label: 'Clothing Slot',
+                label: '服装槽位',
                 type: 'select',
                 options: () => {
                     const { getActiveSlotNames } = require('./attachments/presets');
                     const slots = getActiveSlotNames();
-                    const options: {[key: string]: string} = { '': 'None' };
+                    const options: {[key: string]: string} = { '': '无' };
                     slots.forEach((slot: string) => {
-                        options[slot] = slot;
+                        options[slot] = getSlotLabel(slot);
                     });
                     return options;
                 }
@@ -377,7 +378,7 @@ new Property(Cube, "string", "clothingSlot", {
     },
 });
 
-new Property(Cube, "boolean", "backdrop");
+new Property(Cube, "boolean", "backdrop", { label: '背景模型' });
 registerStepParentTransformProperties(Cube);
 
 registerOptionalInternalProperty(Cube, 'boolean', 'vs_has_rotation_origin', value => value === true);
@@ -387,12 +388,12 @@ registerOptionalInternalProperty(Cube, 'object', 'vs_extra_props', isNonEmptyRec
 export const VS_TEXTURE_PROPS = [
     new Property(Texture, "string", "textureLocation", {
         default: '',
-        label: "Texture Location",
+        label: "纹理路径",
         exposed: true,
         inputs: {
             element_panel: {
                 input: {
-                    label: 'Texture Location',
+                    label: '纹理路径',
                     type: 'text'
                 }
             }
@@ -401,18 +402,18 @@ export const VS_TEXTURE_PROPS = [
 ];
 
 export const VS_LOCATOR_PROPS = [
-    new Property(Locator, "number", "rotationX", { default: 0 }),
-    new Property(Locator, "number", "rotationY", { default: 0 }),
-    new Property(Locator, "number", "rotationZ", { default: 0 }),
+    new Property(Locator, "number", "rotationX", { default: 0, label: 'X 轴旋转' }),
+    new Property(Locator, "number", "rotationY", { default: 0, label: 'Y 轴旋转' }),
+    new Property(Locator, "number", "rotationZ", { default: 0, label: 'Z 轴旋转' }),
 ];
 
 export const VS_FACE_PROPS = [
-    new Property(CubeFace, "number", "glow"),
-    new Property(CubeFace, "number", "reflectiveMode"),
-    new Property(CubeFace, "array", "windMode"),
-    new Property(CubeFace, "array", "windData"),
-    new Property(CubeFace, "boolean", "autoUv", { default: false }),
-    new Property(CubeFace, "boolean", "snapUv", { default: false }),
+    new Property(CubeFace, "number", "glow", { label: '自发光强度' }),
+    new Property(CubeFace, "number", "reflectiveMode", { label: '反射模式' }),
+    new Property(CubeFace, "array", "windMode", { label: '风动模式' }),
+    new Property(CubeFace, "array", "windData", { label: '风动数据' }),
+    new Property(CubeFace, "boolean", "autoUv", { default: false, label: '自动 UV' }),
+    new Property(CubeFace, "boolean", "snapUv", { default: false, label: 'UV 吸附' }),
 ];
 
 registerOptionalInternalProperty(CubeFace, 'object', 'vs_extra_props', isNonEmptyRecord);

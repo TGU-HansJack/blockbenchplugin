@@ -1,45 +1,58 @@
-![Vintage Story Format Support](header.png)
+![Vintage Story 格式支持](header.png)
 
-# What this is:
+# Vintage Story 格式支持
 
-A Blockbench (BB) plugin that handles importing and exporting from and to the Vintage Story (VS) shape format to make it a viable alternative to Vintage Story Model Creator (VSMC). The VS shape format is similar to the BB format but still different in a few key aspects.
+这是一个 Blockbench（BB）插件，支持导入、编辑和导出 Vintage Story（VS）的 shape 模型，包括动画与附着点，可作为 Vintage Story Model Creator（VSMC）的替代工具。
 
-# How to install:
+本项目基于 [Anego Studios 的原项目](https://github.com/anegostudios/blockbenchplugin)进行简体中文汉化。**汉化作者：HansJack**，修改日期：2026-11-04。
 
-Open Blockbench and select "File->Plugins..." then drag-and-drop the vintagestory.js  file into the window that opens and you are ready to go.
+## 安装
 
-# Basic use:
+需要 **Blockbench 5.0.0 或更高版本的桌面版**。
 
-After the plugin is installed it should be possible to open VS shape files via "File->Open Model" or create new ones with "File->New->Vintage Story Base Format". There should also be new Actions in the Import and Export sections to import from and export to VS shape format.
+下载 GitHub Actions 构建产物或 Release 中的压缩包并解压，保留其中的 `vintagestory.js`、`icon.png`、`about.md` 等文件。打开 Blockbench，选择 **文件 > 插件**，将 `vintagestory.js` 拖入插件窗口即可安装，也可通过插件窗口的“从文件加载插件”按钮选择此文件。
 
-For Blockbench to figure out texture paths from the base game on its own, I added a setting under "File->Preferences->Settings". Under "General" right at the bottom should be a folder icon called "Game Path". When clicking on it you should be able to select the path to your game folder.
+## 基本使用
 
-# This still needs work:
+- 通过 **文件 > 打开模型** 打开 VS shape JSON 文件。
+- 通过 **文件 > 新建 > Vintage Story 基础格式** 创建模型。
+- 使用 **导入** 和 **导出** 菜单中的 VS 操作交换模型文件。
+- 在 **文件 > 首选项 > 设置 > 常规 > 游戏路径** 中选择 Vintage Story 安装目录（包含 `assets`、`mods` 和 `lib` 文件夹），以便自动查找原版纹理。
+- 使用 **附件** 工具导入、管理和导出服装附件，在 **VS 面属性** 面板中调整自发光、反射和风动效果。
+- 可在动画面板中导入、保存动画库；声音与粒子效果也支持预览。
 
-- ~~Animation export and import not implemented yet~~ Should be pretty stable now
-- ~~Automatic BackDropShape handling not implemented yet~~ Might still have a few bugs
-- ~~Attachment points not implemented yet~~ Should now work
-- ~~Reexported file structure is more complicated than it needs to be~~
+服装槽位的界面名称已汉化；括号中的英文标识及文件格式字段保持原样，以兼容已有模型、自定义槽位和游戏资源。
 
-For other bugs or features that are not implemented yet, refer to the Issue section (https://github.com/Darkluke1111/BlockbenchPlugins/issues)
+## 本地构建
 
-# Building the Plugin
-
-You can build the plugin with
+建议使用 Node.js 24 LTS，在项目目录运行：
 
 ```console
-npm install
+npm ci
 npm run gen_schema
 npm run build
 ```
-This should build the plugin with webpack into .../dist/vintagestory.js which can then be imported to BB.
-You only need to rerun gen_schema when vs_shape_defs.ts has changed, otherwise further builds only require running
-```console
-npm run build
-```
 
-You can also use
+插件使用 **esbuild** 构建，输出为 `dist/vintagestory.js`；`dist` 同时包含图标、插件说明、使用文档和许可证。仅在 `src/vs_shape_def.ts` 发生变化后需要重新生成 schema，后续构建通常只需运行 `npm run build`。
+
+开发构建包含用于调试的 source map：
+
 ```console
 npm run dev
 ```
-instead for a development build that contains source maps for debugging. 
+
+运行 `npm run lint` 可检查代码。
+
+## GitHub Actions
+
+- **构建插件**：推送分支、提交拉取请求或手动触发后，安装锁定依赖、检查代码、生成 schema 并构建；可在工作流页面下载 `vintagestory` 产物。
+- **创建发布草稿**：手动选择主版本、次版本或修订版本递增，并填写发布说明。工作流从包版本、已有版本标签和发布记录中取最高版本，递增后更新构建使用的包版本，再生成插件及压缩包，并创建发布草稿，供维护者审核后发布。版本变更仅用于该次构建，不会提交回分支。
+
+## 原作者、版权与许可
+
+插件由 **Darkluke1111** 创建，**codename-B** 参与贡献。经 Darkluke1111 许可，现由 Vintage Story 开发商 **Anego Studios** 维护。原作者署名、贡献者信息及版权声明均予以保留；HansJack 负责本分支的简体中文汉化。
+
+- [上游源代码](https://github.com/anegostudios/blockbenchplugin)
+- [上游问题跟踪](https://github.com/anegostudios/blockbenchplugin/issues)
+
+本项目遵循 **GNU General Public License 第 3 版（GPL v3）**，详见 [LICENSE](LICENSE)。软件不提供任何担保；许可证英文原文予以保留。

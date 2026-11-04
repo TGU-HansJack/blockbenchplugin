@@ -13,7 +13,7 @@ import { fs } from "./util/native";
 export function im(content: VS_Shape, _path: string, asBackdrop: boolean) {
 
     if (!Project) {
-        throw new Error("No project loaded during import");
+        throw new Error("导入时未加载项目");
     }
 
     // Set project texture dimensions

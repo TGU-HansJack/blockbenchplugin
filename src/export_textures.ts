@@ -41,7 +41,7 @@ export function export_textures(elements: VS_Element[]): Record<string, string> 
 export function warnTextureReadErrors(readErrors: Map<string, unknown>): void {
     if (readErrors.size === 0) return;
     console.error('[VS Export] Unresolved texture search; unreadable folders:', readErrors);
-    Blockbench.showQuickMessage('Some texture paths are unresolved and folders could not be searched. Check the exported texture references.', 5000);
+    Blockbench.showQuickMessage('部分纹理路径未解析，且无法搜索相关文件夹。请检查导出的纹理引用。', 5000);
 }
 
 /**

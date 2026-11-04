@@ -12,6 +12,9 @@ const CONFIG: esbuild.BuildOptions = {
     bundle: true,
     platform: "node",
     outfile: "./dist/vintagestory.js",
+    banner: {
+        js: "/*! Vintage Story Format Support — Anego Studios; original author: Darkluke1111; contributor: codename-B.\n * 汉化作者：HansJack（2026-11-04）。基于上游项目修改，按 GNU GPL v3 分发；不提供任何担保。\n * Upstream: https://github.com/anegostudios/blockbenchplugin — see LICENSE. */",
+    },
     plugins: [
 
     ],
@@ -45,4 +48,7 @@ async function build() {
 build().then(() => {
     copyFileSync("./icon.png", "./dist/icon.png");
     copyFileSync("./about.md", "./dist/about.md");
+    copyFileSync("./LICENSE", "./dist/LICENSE");
+    copyFileSync("./README.MD", "./dist/README.MD");
+    copyFileSync("./header.png", "./dist/header.png");
 })

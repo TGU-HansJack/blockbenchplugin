@@ -10,7 +10,7 @@ import { relink_particle_previews } from "./animation_particles";
 // remains as a convenience action here.
 
 const clear_animations_action = createAction(`${PACKAGE.name}:clear_animations_vs`, {
-    name: 'Clear All Animations',
+    name: '清空所有动画',
     icon: 'delete_sweep',
     condition() {
         return is_vs_project(Project);
@@ -18,14 +18,14 @@ const clear_animations_action = createAction(`${PACKAGE.name}:clear_animations_v
     click: function () {
         const total = Blockbench.Animation.all.length;
         if (total === 0) {
-            Blockbench.showQuickMessage('No animations to clear');
+            Blockbench.showQuickMessage('没有可清空的动画');
             return;
         }
-        if (!confirm(`Delete all ${total} animation${total === 1 ? '' : 's'} from this project?\n\nThis can be undone with Ctrl+Z.`)) {
+        if (!confirm(`确定删除此项目中的全部 ${total} 个动画吗？\n\n可使用 Ctrl+Z 撤销。`)) {
             return;
         }
         const removed = clear_animations();
-        Blockbench.showQuickMessage(`Cleared ${removed} animation${removed === 1 ? '' : 's'}`);
+        Blockbench.showQuickMessage(`已清空 ${removed} 个动画`);
     }
 });
 MenuBar.addAction(clear_animations_action, 'edit');
@@ -34,7 +34,7 @@ MenuBar.addAction(clear_animations_action, 'edit');
 // emitter file. Import does that automatically; this re-runs it for hand-authored keyframes
 // and for effects added to the assets folder since the model was opened.
 const reload_vfx_action = createAction(`${PACKAGE.name}:reload_vfx_previews`, {
-    name: 'Reload VFX Previews',
+    name: '重新加载特效预览',
     icon: 'auto_awesome',
     condition() {
         return is_vs_project(Project);
@@ -43,8 +43,8 @@ const reload_vfx_action = createAction(`${PACKAGE.name}:reload_vfx_previews`, {
         const linked = relink_particle_previews();
         Blockbench.showQuickMessage(
             linked === 0
-                ? 'No particle effects could be resolved'
-                : `Linked ${linked} particle keyframe${linked === 1 ? '' : 's'}`
+                ? '未能找到可用的粒子效果'
+                : `已关联 ${linked} 个粒子关键帧`
         );
     }
 });

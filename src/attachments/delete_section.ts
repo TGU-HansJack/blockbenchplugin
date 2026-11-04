@@ -63,7 +63,7 @@ function identifyRootAttachmentGroups(elements: any[]): Set<any> {
  */
 export function deleteSectionSafe(elements: any[]) {
     if (!elements || elements.length === 0) {
-        Blockbench.showQuickMessage("There are no attachments in this section to delete.", QUICK_MESSAGE_DURATION);
+        Blockbench.showQuickMessage("此分区中没有可删除的附件。", QUICK_MESSAGE_DURATION);
         return;
     }
 
@@ -80,8 +80,8 @@ export function deleteSectionSafe(elements: any[]) {
     });
 
     if (allAttachments.size === 0) {
-        Undo.finishEdit('Delete attachment(s)');
-        Blockbench.showQuickMessage("No attachment elements found to delete.", QUICK_MESSAGE_DURATION);
+        Undo.finishEdit('删除附件');
+        Blockbench.showQuickMessage("未找到可删除的附件元素。", QUICK_MESSAGE_DURATION);
         return;
     }
 
@@ -93,10 +93,10 @@ export function deleteSectionSafe(elements: any[]) {
         attachment.remove();
     });
 
-    Undo.finishEdit(`Delete (-) Root: ${allAttachments.size} attachment(s)`);
+    Undo.finishEdit(`删除附件内容（保留根组）：${allAttachments.size} 个附件`);
     
     Blockbench.dispatchEvent('attachments_changed', {});
-    Blockbench.showQuickMessage(`Delete (-) Root: Deleted ${allAttachments.size} attachment(s) (root groups preserved)`, QUICK_MESSAGE_DURATION);
+    Blockbench.showQuickMessage(`已删除 ${allAttachments.size} 个附件（已保留根组）`, QUICK_MESSAGE_DURATION);
 }
 
 /**
@@ -105,7 +105,7 @@ export function deleteSectionSafe(elements: any[]) {
  */
 export function deleteSection(elements: any[]) {
     if (!elements || elements.length === 0) {
-        Blockbench.showQuickMessage("There are no attachments in this section to delete.", QUICK_MESSAGE_DURATION);
+        Blockbench.showQuickMessage("此分区中没有可删除的附件。", QUICK_MESSAGE_DURATION);
         return;
     }
 
@@ -116,8 +116,8 @@ export function deleteSection(elements: any[]) {
     // Blockbench's .remove() method handles removing children automatically, regardless of their properties.
     elements.forEach(element => element.remove());
 
-    Undo.finishEdit(`Delete ${elements.length} attachment(s)`);
+    Undo.finishEdit(`删除 ${elements.length} 个附件`);
     
     Blockbench.dispatchEvent('attachments_changed', {});
-    Blockbench.showQuickMessage(`Deleted ${elements.length} attachment(s)`, QUICK_MESSAGE_DURATION);
+    Blockbench.showQuickMessage(`已删除 ${elements.length} 个附件`, QUICK_MESSAGE_DURATION);
 }

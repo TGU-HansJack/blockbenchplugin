@@ -9,7 +9,7 @@ const DEBUG = false;
  */
 export function exportAttachmentsBB(selection: Group[]) {
     if (!selection || selection.length === 0) {
-        Blockbench.showQuickMessage("Please select one or more attachments to export.", QUICK_MESSAGE_DURATION);
+        Blockbench.showQuickMessage("请选择一个或多个要导出的附件。", QUICK_MESSAGE_DURATION);
         return;
     }
 

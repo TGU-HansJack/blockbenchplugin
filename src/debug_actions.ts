@@ -8,18 +8,18 @@ const path = requireNativeModule('path');
 
 
 const reExportAction = createAction(`${PACKAGE.name}:reExport`, {
-    name: 'Reexport Test',
+    name: '重新导出测试',
     icon: 'fa-flask-vial',
     condition() {
         return is_vs_project(Project);
     },
     click: function () {
         new Dialog("folder_select", {
-            title: "Select Folder",
+            title: "选择文件夹",
             form: {
                 select_folder: {
-                    label: "Select Folder to test",
-                    description: "This Action is made for testing. If you don't know what it does, you probably should not use it.",
+                    label: "选择要测试的文件夹",
+                    description: "此操作用于测试。如果不了解其用途，请勿使用。",
                     type: "folder",
                 }
             },
@@ -60,7 +60,7 @@ const reExportAction = createAction(`${PACKAGE.name}:reExport`, {
 MenuBar.addAction(reExportAction, "file");
 
 const debugAction = createAction(`${PACKAGE.name}:printDebug`, {
-    name: 'Print Debug Info',
+    name: '输出调试信息',
     icon: 'icon',
     condition() {
         return is_vs_project(Project);
@@ -172,18 +172,18 @@ function deepCompare(a: unknown, b: unknown, path: string): string[] {
 }
 
 const roundTripDiffAction = createAction(`${PACKAGE.name}:roundTripDiff`, {
-    name: 'Round-Trip Diff Test',
+    name: '导入导出差异测试',
     icon: 'fa-rotate',
     condition() {
         return is_vs_project(Project);
     },
     click: function () {
         new Dialog("roundtrip_diff", {
-            title: "Round-Trip Diff Test",
+            title: "导入导出差异测试",
             form: {
                 select_folder: {
-                    label: "Select Folder to test",
-                    description: "Imports each VS shape file, re-exports it, and compares the JSON. Differences are logged to the console (F12).",
+                    label: "选择要测试的文件夹",
+                    description: "逐个导入 VS shape 文件，重新导出后对比 JSON。差异会输出到控制台（F12）。",
                     type: "folder",
                 }
             },

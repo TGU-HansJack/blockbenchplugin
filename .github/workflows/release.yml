@@ -1,75 +1,109 @@
-name: Release
+name: 创建发布草稿
 
-on: 
+on:
   workflow_dispatch:
     inputs:
       release_type:
-        description: 'release type (major,minor,patch)'
+        description: 递增版本级别（major 主版本 / minor 次版本 / patch 修订版本）
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+        default: patch
         required: true
-      release_description: 
+      release_description:
+        description: 发布说明
+        type: string
         required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.repository }}
+  cancel-in-progress: false
 
 jobs:
   release:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [22.x,]
-
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
     steps:
+      - name: 检出源代码和版本标签
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
 
-    - uses: actions/checkout@v4
+      - name: 设置 Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
 
-    - name: Get next version
-      uses: reecetech/version-increment@2024.10.1
-      id: version
-      with:
-        scheme: semver
-        increment: ${{ github.event.inputs.release_type }}
+      - name: 安装依赖
+        run: npm ci
 
+      - name: 计算并更新构建版本
+        id: version
+        env:
+          RELEASE_TYPE: ${{ inputs.release_type }}
+        run: |
+          gh release list --limit 1000 --json tagName > "$RUNNER_TEMP/releases.json"
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import path from 'node:path';
+          import { execFileSync } from 'node:child_process';
+          const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+          const releases = JSON.parse(fs.readFileSync(path.join(process.env.RUNNER_TEMP, 'releases.json'), 'utf8'));
+          const tags = execFileSync('git', ['tag', '--list'], { encoding: 'utf8' }).trim().split('\n');
+          const versions = [pkg.version, ...tags, ...releases.map(release => release.tagName)]
+            .map(tag => /^v?(\d+)\.(\d+)\.(\d+)$/.exec(tag.trim()))
+            .filter(Boolean)
+            .map(match => match.slice(1).map(Number))
+            .sort((a, b) => b[0] - a[0] || b[1] - a[1] || b[2] - a[2]);
+          if (!versions.length) throw new Error('未找到有效的基础版本');
+          let [major, minor, patch] = versions[0];
+          switch (process.env.RELEASE_TYPE) {
+            case 'major': major++; minor = 0; patch = 0; break;
+            case 'minor': minor++; patch = 0; break;
+            case 'patch': patch++; break;
+            default: throw new Error('不支持的版本递增级别');
+          }
+          const version = `${major}.${minor}.${patch}`;
+          execFileSync('npm', ['version', version, '--no-git-tag-version', '--ignore-scripts'], { stdio: 'inherit' });
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, `version=${version}\ntag=v${version}\n`);
+          NODE
 
+      - name: 检查代码
+        run: npm run lint
 
-    - name: Replace Version Number
-      uses: jacobtomlinson/gha-find-replace@v3
-      with:
-        include: '**/vintagestory.js'
-        find: >-
-          version: '(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)'
-        replace: >-
-          version: '${{ steps.version.outputs.major-version }}.${{ steps.version.outputs.minor-version }}.${{ steps.version.outputs.patch-version }}'
-        regex: true
+      - name: 生成模型 schema
+        run: npm run gen_schema
 
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
+      - name: 构建插件
+        run: npm run build
 
-    - name: Build
-      run: |
-        npm install
-        npm run gen_schema
-        npm run build --mode=prod
+      - name: 打包插件与许可证
+        env:
+          RELEASE_VERSION: ${{ steps.version.outputs.version }}
+        working-directory: dist
+        run: zip -r "../vintagestory-${RELEASE_VERSION}.zip" .
 
-    - name: release
-      uses: actions/create-release@v1
-      id: create_release
-      with:
-        draft: true
-        prerelease: false
-        release_name: ${{ steps.version.outputs.version }}
-        tag_name: ${{ steps.version.outputs.version }}
-        body: ${{ github.event.inputs.release_description }}
-        #body_path: CHANGELOG.md
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
-
-    - name: upload artifact
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./dist/vintagestory.js
-        asset_name: vintagestory.js
-        asset_content_type: application/zip
+      - name: 创建草稿并上传文件
+        env:
+          RELEASE_TAG: ${{ steps.version.outputs.tag }}
+          RELEASE_VERSION: ${{ steps.version.outputs.version }}
+          RELEASE_DESCRIPTION: ${{ inputs.release_description }}
+          RELEASE_COMMIT: ${{ github.sha }}
+        run: |
+          printf '%s\n' "$RELEASE_DESCRIPTION" > "$RUNNER_TEMP/release-notes.md"
+          gh release create "$RELEASE_TAG" \
+            --draft \
+            --target "$RELEASE_COMMIT" \
+            --title "Vintage Story 格式支持 ${RELEASE_VERSION}" \
+            --notes-file "$RUNNER_TEMP/release-notes.md" \
+            dist/vintagestory.js "vintagestory-${RELEASE_VERSION}.zip" dist/LICENSE

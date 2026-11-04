@@ -7,6 +7,12 @@ import { fs } from "./util/native";
 const SOUND_EXTENSIONS = ['.ogg', '.wav', '.mp3'];
 
 const SOUND_DEFAULTS = { vs_range: 32, vs_volume: 1, vs_pitch: 1, vs_chance: 1 } as const;
+const SOUND_LABELS: Record<keyof typeof SOUND_DEFAULTS, string> = {
+    vs_range: '范围',
+    vs_volume: '音量',
+    vs_pitch: '音调',
+    vs_chance: '播放概率',
+};
 
 function onSoundKeyframe(dataPoint: any): boolean {
     return dataPoint?.keyframe?.channel === 'sound';
@@ -14,14 +20,13 @@ function onSoundKeyframe(dataPoint: any): boolean {
 
 if (typeof KeyframeDataPoint !== 'undefined') {
     for (const [key, value] of Object.entries(SOUND_DEFAULTS)) {
-        const name = key.slice(3);
         new Property(KeyframeDataPoint, 'number', key, {
-            label: name[0].toUpperCase() + name.slice(1),
+            label: SOUND_LABELS[key as keyof typeof SOUND_DEFAULTS],
             exposed: true, default: value, condition: onSoundKeyframe,
         });
     }
     new Property(KeyframeDataPoint, 'boolean', 'vs_looping', {
-        label: 'Looping', exposed: true, default: false, condition: onSoundKeyframe,
+        label: '循环播放', exposed: true, default: false, condition: onSoundKeyframe,
     });
 }
 

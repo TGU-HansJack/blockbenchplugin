@@ -13,7 +13,7 @@ export interface AttachmentPreset {
  */
 export const GLINT_PRESET: AttachmentPreset = {
     name: "Glint",
-    description: "Glint character customization slots",
+    description: "Glint 角色自定义槽位",
     slots: [
         'Outerwear',
         'Top',
@@ -38,7 +38,7 @@ export const GLINT_PRESET: AttachmentPreset = {
  */
 export const VINTAGE_STORY_PRESET: AttachmentPreset = {
     name: "Vintage Story",
-    description: "Vintage Story Seraph clothing and armor slots",
+    description: "Vintage Story Seraph 服装与护甲槽位",
     slots: [
         // Clothing slots
         'Arm',

@@ -15,7 +15,7 @@ function init() {
         
     deletables.push(actions.importBB, actions.importVS, panel);
     const attachment_mode = new Mode('attachments', {
-        name: 'Attachments',
+        name: '附件',
         condition: { formats: ['formatVS'] },
         onSelect: () => {
             panel.moveTo('right_bar', Panels.vs_face_properties, true);
@@ -93,7 +93,7 @@ function cleanup() {
 
     if (failures.length) {
         console.error("Attachments module cleanup incomplete:", failures);
-        Blockbench.showQuickMessage('Could not fully unload attachments. Restart Blockbench to finish cleanup.', 5000);
+        Blockbench.showQuickMessage('无法完全卸载附件模块，请重启 Blockbench 以完成清理。', 5000);
         return false;
     }
 

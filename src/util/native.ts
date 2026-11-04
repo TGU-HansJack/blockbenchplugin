@@ -8,7 +8,7 @@ function load_fs(): FsModule {
         fs_module = requireNativeModule('fs');
         fs_denied = !fs_module;
     }
-    if (!fs_module) throw new Error('File system access was denied. Reload the plugin to grant it.');
+    if (!fs_module) throw new Error('文件系统访问被拒绝，请重新加载插件并授予权限。');
     return fs_module;
 }
 
@@ -21,7 +21,7 @@ let env_game_path: string | undefined | null = null;
 function get_env_game_path(): string | undefined {
     if (env_game_path === null) {
         env_game_path = requireNativeModule('process', {
-            message: 'Reads the VINTAGE_STORY environment variable to find your game folder.',
+            message: '读取 VINTAGE_STORY 环境变量以查找游戏文件夹。',
         })?.env.VINTAGE_STORY;
     }
     return env_game_path;

@@ -4,23 +4,23 @@ import icon from "../icon.png";
 
 export function create_format(): ModelFormat { 
     const format =  new ModelFormat("formatVS", {
-        name: "Vintage Story Base Format",
-        description: "Vintage Story Format",
+        name: "Vintage Story 基础格式",
+        description: "Vintage Story 格式",
         target: "Vintage Story",
         format_page: {
             content: [
-                { type: "text", text: "Import, edit, and export models in the Vintage Story shape format, including animations and attachment points." },
-                { type: "h3", text: "Getting started" },
+                { type: "text", text: "导入、编辑和导出 Vintage Story shape 模型，支持动画与附着点。" },
+                { type: "h3", text: "快速入门" },
                 {
                     type: "text",
                     text: [
-                        "* Open a Vintage Story shape JSON file with **File > Open Model**.",
-                        "* Create a model with **File > New > Vintage Story Base Format**.",
-                        "* Use the Vintage Story actions in the **Import** and **Export** menus to exchange shape files.",
-                        "* The plugin also provides attachment tools and a **VS Face Properties** panel for glow, reflective mode, and wind properties.",
+                        "* 通过 **文件 > 打开模型** 打开 Vintage Story shape JSON 文件。",
+                        "* 通过 **文件 > 新建 > Vintage Story 基础格式** 创建模型。",
+                        "* 使用 **导入** 和 **导出** 菜单中的 Vintage Story 操作交换模型文件。",
+                        "* 插件还提供 **附件** 工具和 **VS 面属性** 面板，用于调整自发光、反射模式和风动属性。",
                     ].join("\n"),
                 },
-                { type: "text", text: "[Source repository](https://github.com/anegostudios/blockbenchplugin) · [Report an issue](https://github.com/anegostudios/blockbenchplugin/issues)" },
+                { type: "text", text: "[上游源代码](https://github.com/anegostudios/blockbenchplugin) · [上游问题跟踪](https://github.com/anegostudios/blockbenchplugin/issues) · 汉化作者：HansJack" },
             ],
         },
         codec: codecVS,

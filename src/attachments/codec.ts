@@ -123,7 +123,7 @@ export function createExportCodec(selection: any[] = []) {
     }
 
     return new Codec('projectSelection', {
-        name: 'Blockbench Project Selection',
+        name: 'Blockbench 项目选中内容',
         extension: 'bbmodel',
         remember: true,
         export() {
@@ -138,7 +138,7 @@ export function createExportCodec(selection: any[] = []) {
             });
         },
         compile(selection: any[], options?: any) {
-            if (!Project) throw new Error('Cannot export attachments without an open project.');
+            if (!Project) throw new Error('请先打开项目再导出附件。');
             if (!options) options = {};
             const model: any = {
                 meta: {

@@ -58,7 +58,7 @@ function build_library(path: string | undefined, animations: VS_Animation[]): VS
 function read_library(path: string | undefined): VS_AnimationLibrary | null {
     if (!path || !fs.existsSync(path)) return null;
     const library = JSON5.parse(fs.readFileSync(path, 'utf-8')) as VS_AnimationLibrary;
-    if (!Array.isArray(library.animations)) throw new Error(`Invalid animation library: ${path}`);
+    if (!Array.isArray(library.animations)) throw new Error(`动画库无效： ${path}`);
     return library;
 }
 
@@ -66,7 +66,7 @@ function read_library(path: string | undefined): VS_AnimationLibrary | null {
 function load_file(file: AnimationCodecFile, animation_filter?: string[]): _Animation[] {
     const json = (file.json ?? JSON5.parse(file.content as string)) as VS_AnimationLibrary;
     const created: _Animation[] = [];
-    if (!Array.isArray(json.animations)) throw new Error(`Invalid animation library: ${file.path}`);
+    if (!Array.isArray(json.animations)) throw new Error(`动画库无效： ${file.path}`);
 
     libraryMeta.set(file.path, { code: json.code, name: json.name });
 
@@ -108,7 +108,7 @@ function compile_file(
 function pick_file(): void {
     Blockbench.import({
         resource_id: 'vs_animation',
-        type: 'Vintage Story Animation',
+        type: 'Vintage Story 动画',
         extensions: ['json'],
         multiple: true,
         startpath: default_animations_dir(),
@@ -123,7 +123,7 @@ function pick_file(): void {
 function import_file(file: AnimationCodecFile): _Animation[] {
     Undo.initEdit({ animations: [], outliner: true, elements: Cube.all });
     const created = load_file(file);
-    Undo.finishEdit('Import animations', { animations: created });
+    Undo.finishEdit('导入动画', { animations: created });
     return created;
 }
 
@@ -131,7 +131,7 @@ function reload_animations(animations: _Animation[]): void {
     if (!animations.length) return;
     const path = animations[0].path;
     const json = JSON5.parse(fs.readFileSync(path, 'utf-8')) as VS_AnimationLibrary;
-    if (!Array.isArray(json.animations)) throw new Error(`Invalid animation library: ${path}`);
+    if (!Array.isArray(json.animations)) throw new Error(`动画库无效： ${path}`);
     const selected = animations.find(a => a.selected);
     Undo.initEdit({ animations, outliner: true, elements: Cube.all });
     animations.forEach(a => a.remove(false, false));
@@ -141,7 +141,7 @@ function reload_animations(animations: _Animation[]): void {
         animation.vs_library_ref = previous.vs_library_ref;
         if (previous === selected) animation.select();
     }
-    Undo.finishEdit('Reload animations', { animations: created });
+    Undo.finishEdit('重新加载动画', { animations: created });
 }
 
 /**
@@ -152,8 +152,8 @@ function write_animation_to_library(animation: _Animation): void {
     const vsAnim = compile_animation(animation);
     if (!vsAnim) {
         Blockbench.showMessageBox({
-            title: 'Nothing to save',
-            message: `Animation "${animation.name}" has no keyframes to export.`
+            title: '没有可保存的内容',
+            message: `动画“${animation.name}”没有可导出的关键帧。`
         });
         return;
     }
@@ -167,7 +167,7 @@ function write_animation_to_library(animation: _Animation): void {
         animation.path = real_path;
         // Without this a silently skipped save (e.g. clicking a greyed-out button) is
         // indistinguishable from a successful one.
-        Blockbench.showQuickMessage(`Saved "${animation.name}" to ${basename_no_ext(real_path)}.json`, 2000);
+        Blockbench.showQuickMessage(`已将“${animation.name}”保存至 ${basename_no_ext(real_path)}.json`, 2000);
     });
 }
 
@@ -176,7 +176,7 @@ function save_animation(animation: _Animation, save_as?: boolean): void {
     if (!animation.path || save_as) {
         Blockbench.export({
             resource_id: 'vs_animation',
-            type: 'Vintage Story Animation',
+            type: 'Vintage Story 动画',
             extensions: ['json'],
             name: animation.saved_name || animation.name,
             startpath: animation.path || default_animations_dir(),
@@ -216,7 +216,7 @@ function export_file(path: string, save_as?: boolean): void {
     // group's save button turns inline animations into a library file group.
     Blockbench.export({
         resource_id: 'vs_animation',
-        type: 'Vintage Story Animation',
+        type: 'Vintage Story 动画',
         extensions: ['json'],
         name: (filterPath && basename_no_ext(filterPath)) || 'animations',
         startpath: filterPath || default_animations_dir(),
